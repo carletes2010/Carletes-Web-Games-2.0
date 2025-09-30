@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Carletes Games · Money Roller</title>
+
+  <!-- Google Font: Lexend Deca -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --muted: #444;
+      --card: #f9fafb;
+      --stroke: #e5e7eb;
+      --accent: #1d4ed8;       /* azul principal */
+      --accent-dark: #1e3a8a;
+      --radius: 16px;
+      --shadow: 0 6px 18px rgba(0,0,0,.08);
+      --pad: clamp(14px, 2.4vw, 24px);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0a0a0a;
+        --fg: #f9fafb;
+        --muted: #9ca3af;
+        --card: #111;
+        --stroke: #222;
+        --accent: #3b82f6;
+        --accent-dark: #2563eb;
+        --shadow: 0 8px 20px rgba(0,0,0,.5);
+      }
+    }
+
+    *{ box-sizing: border-box }
+    html, body{
+      margin:0; height:100%;
+      background: var(--bg); color: var(--fg);
+      font-family: 'Lexend Deca', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
+    a{ color: inherit; text-decoration: none }
+
+    .wrap{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: max(14px, env(safe-area-inset-top)) var(--pad) max(16px, env(safe-area-inset-bottom));
+    }
+
+    .header{
+      position: sticky; top: 0; z-index: 20;
+      padding: 10px var(--pad);
+      margin: -10px calc(var(--pad)*-1) 8px;
+      background: rgba(255,255,255,.75);
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--stroke);
+      display:flex; align-items:center; justify-content:center;
+    }
+    @media (prefers-color-scheme: dark){
+      .header{ background: rgba(0,0,0,.4); }
+    }
+    .logo{
+      position: absolute; left: max(12px, env(safe-area-inset-left));
+      top: 50%; transform: translateY(-50%);
+      display:flex; align-items:center; gap:8px;
+    }
+    .logo img{ width: 28px; height: 28px; border-radius: 8px; display:block; }
+    .brand{ font-weight: 800; font-size: 14px; color: var(--accent) }
+
+    .title{
+      margin: 0; text-align:center;
+      font-weight: 800;
+      font-size: clamp(18px, 3.6vw, 28px);
+      letter-spacing: .2px;
+    }
+
+    .stage{
+      margin-top: 14px;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: clip;
+    }
+    .stage-inner{
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: clamp(380px, 72svh, 860px);
+      max-height: calc(100svh - 160px);
+      display: grid; place-items: center;
+      background: #fff;
+    }
+    @media (prefers-color-scheme: dark){ .stage-inner{ background: #0b0b0b } }
+
+    iframe.game{ width: 100%; height: 100%; border: none; background: #000; }
+
+    .controls{
+      display:flex; gap:10px; justify-content:space-between; align-items:center;
+      padding: 10px 12px; border-top: 1px solid var(--stroke);
+      background: rgba(255,255,255,.6);
+    }
+    @media (prefers-color-scheme: dark){
+      .controls{ background: rgba(0,0,0,.35); }
+    }
+    .hint{ font-size: 12px; color: var(--muted) }
+    .btn{
+      appearance:none; cursor:pointer; padding: 12px 16px;
+      font-weight: 800; font-size: 14px; border-radius: 12px; line-height:1;
+      border: 1px solid var(--accent); background: var(--accent); color:#fff;
+      transition: background .2s ease, transform .1s ease; touch-action: manipulation;
+    }
+    .btn:active{ transform: scale(.98) }
+    .btn.ghost{ background: transparent; color: var(--accent) }
+    .btn.ghost:hover{ background: var(--accent); color: #fff }
+
+    .panic{
+      position: fixed;
+      right: max(12px, env(safe-area-inset-right));
+      bottom: max(12px, env(safe-area-inset-bottom));
+      z-index: 50;
+      padding: 14px 18px; border-radius: 14px; font-weight: 900;
+      border: 2px solid #000; background: #000; color:#fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,.22); letter-spacing:.2px;
+    }
+    .panic:active{ transform: translateY(1px) }
+
+    footer{ margin-top: 14px; text-align:center; color: var(--muted); font-size: 13px }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header" role="banner">
+      <a class="logo" href="index.html" aria-label="Volver al menú de Carletes Games">
+        <img src="img/money-roller.png/" alt="" />
+        <span class="brand">Carletes Games</span>
+      </a>
+      <h1 class="title">Money Roller</h1>
+    </div>
+
+    <section class="stage" aria-label="Juego">
+      <div class="stage-inner">
+        <iframe class="game" src="gamefiles/money-roller-main/index.html" title="Money Roller"
+          allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
+          allowfullscreen referrerpolicy="no-referrer"></iframe>
+      </div>
+
+      <div class="controls">
+        <span class="hint">Consejo: gira tu iPad a horizontal para más espacio.</span>
+        <div style="display:flex; gap:10px;">
+          <a class="btn ghost" href="index.html">← Menú</a>
+          <a class="btn" href="https://www.google.com" rel="nofollow">Pánico</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>Carletes Games · Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
+  </div>
+
+  <!-- Nota: si más tarde quieres añadir la acción de ESC, agrégala tú al final del archivo generado. -->
+</body>
+</html>

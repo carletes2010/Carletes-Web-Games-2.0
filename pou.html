@@ -117,19 +117,6 @@
     }
     .btn.xl:hover{ filter: brightness(1.05); box-shadow: 0 12px 36px rgba(0,0,0,.42) }
 
-    /* Poster opcional (decorativo) */
-    .poster{
-      position: absolute; inset: 0; display:grid; place-items:center;
-      background:
-        radial-gradient(1200px 600px at 50% 100%, rgba(255,255,255,.06), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.1));
-      pointer-events: none;
-    }
-    .poster img{
-      width: min(40vmin, 220px); height: auto; border-radius: 20%;
-      opacity: .95; filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
-    }
-
     .controls{
       display:flex; gap:10px; justify-content:space-between; align-items:center;
       padding: 10px 12px; border-top: 1px solid var(--stroke);
@@ -168,14 +155,9 @@
     <section class="stage" aria-label="Juego">
       <div class="stage-inner" id="stage">
         <!-- Botón central "Jugar" con el mismo estilo que 'Pánico' -->
-        <a class="btn xl" href="gamefiles/pou/index.html" target="_blank" rel="noopener noreferrer" aria-label="Jugar Pou en una pestaña nueva">
+        <a class="btn xl" href="gamefiles/pou/index.html" aria-label="Jugar Pou">
           <span aria-hidden="true"></span> Jugar
         </a>
-
-        <!-- Poster opcional (decorativo) -->
-        <div class="poster" aria-hidden="true">
-          <img src="img/Pou.png" alt="" onerror="this.remove()" />
-        </div>
       </div>
 
       <div class="controls">
@@ -193,7 +175,7 @@
   <noscript>
     <p style="text-align:center; padding:12px">
       JavaScript está desactivado. Abre el juego aquí:
-      <a href="gamefiles/pou/index.html" target="_blank" rel="noopener noreferrer">gamefiles/pou/index.html</a>
+      <a href="gamefiles/pou/index.html">gamefiles/pou/index.html</a>
     </p>
   </noscript>
 </body>

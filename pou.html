@@ -16,7 +16,7 @@
       --muted: #444;
       --card: #f9fafb;
       --stroke: #e5e7eb;
-      --accent: #1d4ed8;       /* azul principal */
+      --accent: #1d4ed8;
       --accent-dark: #1e3a8a;
       --radius: 16px;
       --shadow: 0 6px 18px rgba(0,0,0,.08);
@@ -91,11 +91,44 @@
       height: clamp(380px, 72svh, 860px);
       max-height: calc(100svh - 160px);
       display: grid; place-items: center;
-      background: #fff;
+      position: relative;
+      background: #0b0b0b;
+      isolation: isolate;
     }
-    @media (prefers-color-scheme: dark){ .stage-inner{ background: #0b0b0b } }
 
-    iframe.game{ width: 100%; height: 100%; border: none; background: #000; }
+    /* Botón base (mismo que Pánico) */
+    .btn{
+      appearance:none; cursor:pointer; padding: 12px 16px;
+      font-weight: 800; font-size: 14px; border-radius: 12px; line-height:1;
+      border: 1px solid var(--accent); background: var(--accent); color:#fff;
+      transition: background .2s ease, transform .1s ease; touch-action: manipulation;
+      display: inline-flex; align-items: center; gap: 10px; text-align: center;
+    }
+    .btn:active{ transform: scale(.98) }
+    .btn.ghost{ background: transparent; color: var(--accent) }
+    .btn.ghost:hover{ background: var(--accent); color: #fff }
+
+    /* Variante XL para el botón central (mismo estilo, solo más grande) */
+    .btn.xl{
+      padding: clamp(16px, 2.8vmin, 22px) clamp(22px, 4vmin, 32px);
+      font-size: clamp(18px, 3.6vmin, 26px);
+      border-width: 2px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .btn.xl:hover{ filter: brightness(1.05); box-shadow: 0 12px 36px rgba(0,0,0,.42) }
+
+    /* Poster opcional (decorativo) */
+    .poster{
+      position: absolute; inset: 0; display:grid; place-items:center;
+      background:
+        radial-gradient(1200px 600px at 50% 100%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.1));
+      pointer-events: none;
+    }
+    .poster img{
+      width: min(40vmin, 220px); height: auto; border-radius: 20%;
+      opacity: .95; filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
+    }
 
     .controls{
       display:flex; gap:10px; justify-content:space-between; align-items:center;
@@ -106,15 +139,6 @@
       .controls{ background: rgba(0,0,0,.35); }
     }
     .hint{ font-size: 12px; color: var(--muted) }
-    .btn{
-      appearance:none; cursor:pointer; padding: 12px 16px;
-      font-weight: 800; font-size: 14px; border-radius: 12px; line-height:1;
-      border: 1px solid var(--accent); background: var(--accent); color:#fff;
-      transition: background .2s ease, transform .1s ease; touch-action: manipulation;
-    }
-    .btn:active{ transform: scale(.98) }
-    .btn.ghost{ background: transparent; color: var(--accent) }
-    .btn.ghost:hover{ background: var(--accent); color: #fff }
 
     .panic{
       position: fixed;
@@ -134,17 +158,24 @@
   <div class="wrap">
     <div class="header" role="banner">
       <a class="logo" href="index.html" aria-label="Volver al menú de Carletes Games">
-        <img src="img/Pou.png" alt="" />
+        <!-- Si 'img/Pou.png' no existe, se oculta -->
+        <img src="img/Pou.png" alt="Pou" onerror="this.style.display='none'" />
         <span class="brand">Carletes Games</span>
       </a>
       <h1 class="title">Pou</h1>
     </div>
 
     <section class="stage" aria-label="Juego">
-      <div class="stage-inner">
-        <iframe class="game" src="gamefiles/pou/index.html" title="Pou"
-          allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
-          allowfullscreen referrerpolicy="no-referrer"></iframe>
+      <div class="stage-inner" id="stage">
+        <!-- Botón central "Jugar" con el mismo estilo que 'Pánico' -->
+        <a class="btn xl" href="gamefiles/pou/index.html" target="_blank" rel="noopener noreferrer" aria-label="Jugar Pou en una pestaña nueva">
+          <span aria-hidden="true"></span> Jugar
+        </a>
+
+        <!-- Poster opcional (decorativo) -->
+        <div class="poster" aria-hidden="true">
+          <img src="img/Pou.png" alt="" onerror="this.remove()" />
+        </div>
       </div>
 
       <div class="controls">
@@ -159,6 +190,11 @@
     <footer>Carletes Games · Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
   </div>
 
-  <!-- Nota: si más tarde quieres añadir la acción de ESC, agrégala tú al final del archivo generado. -->
+  <noscript>
+    <p style="text-align:center; padding:12px">
+      JavaScript está desactivado. Abre el juego aquí:
+      <a href="gamefiles/pou/index.html" target="_blank" rel="noopener noreferrer">gamefiles/pou/index.html</a>
+    </p>
+  </noscript>
 </body>
 </html>

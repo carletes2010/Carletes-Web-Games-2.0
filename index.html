@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Carletes Games — Acceso + Catálogo</title>
+  <title>Instituto de Biologia Mexicana</title>
 
   <!-- Google Font: Lexend Deca -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
       --accent-dark: #1e3a8a;
       --radius: 16px;
       --shadow: 0 6px 18px rgba(0,0,0,.08);
-      --pad: clamp(14px, 2.4vw, 24px); /* agregado */
+      --pad: clamp(14px, 2.4vw, 24px);
     }
     @media (prefers-color-scheme: dark){
       :root {
@@ -178,11 +178,13 @@
           <img id="avatar" class="avatar" alt="avatar" src="" onerror="this.style.display='none'"/>
           <div>
             <div style="font-weight:700">Bienvenido, <span id="userName">usuario</span></div>
-            <div style="font-size:12px; color:var(--muted)">Apodo: <span id="userNick">–</span></div>
+            <div style="font-size:12px; color:var(--muted)">Apodo: <span id="userNick">—</span></div>
           </div>
         </div>
         <div class="profile-menu hidden" id="profileMenu">
           <button id="btn-copy-link" class="btn full">Copiar enlace con usuario</button>
+          <div style="height:8px"></div>
+          <button id="btn-logout" class="btn ghost full">Cerrar sesión</button>
         </div>
       </div>
     </div>
@@ -195,14 +197,14 @@
         <p id="welcome" class="subtitle-lg"></p>
         <div class="cta" style="display:flex; justify-content:center; gap:12px;">
           <a href="#menu" class="btn">Entrar a jugar</a>
-          <a href="#menu" class="btn ghost">Ver catálogo</a>
+          <a href="#menu" id="btn-random" class="btn ghost">Elegir un juego random</a>
         </div>
       </section>
 
       <!-- Menú de juegos (se llena por JS) -->
       <main id="menu" class="grid"></main>
 
-      <!-- Player (detalle de juego dentro de la misma página) -->
+      <!-- Player (detalle de juego en la misma página) -->
       <section id="playerView" class="hidden">
         <div class="header" role="banner">
           <a class="logo" href="#" id="btnBack" aria-label="Volver al catálogo">
@@ -214,7 +216,9 @@
 
         <div class="stage" aria-label="Juego">
           <div class="stage-inner">
-            <iframe id="gameFrame" class="game" src="" title="Juego" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen referrerpolicy="no-referrer"></iframe>
+            <iframe id="gameFrame" class="game" src="" title="Juego"
+              allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
+              allowfullscreen referrerpolicy="no-referrer"></iframe>
           </div>
           <div class="controls">
             <span class="hint" id="gameHint">Consejo: gira tu iPad a horizontal para más espacio.</span>
@@ -224,7 +228,6 @@
             </div>
           </div>
         </div>
-        <footer style="margin-top:14px; text-align:center; color:var(--muted); font-size:13px">Carletes Games · Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
       </section>
 
       <footer>Carletes Games · Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
@@ -246,10 +249,10 @@
     </div>
   </div>
 
-  <!-- ===== Firebase + Lógica ===== -->
+  <!-- ===== Firebase + Lógica (SPA + Analytics) ===== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+    import { getAnalytics, logEvent, setUserId, setUserProperties } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
     import {
       getAuth, onAuthStateChanged, updateProfile, signOut,
       signInWithEmailAndPassword, createUserWithEmailAndPassword,
@@ -267,9 +270,9 @@
       measurementId: "G-DS1SXZ8QN2"
     };
 
-    // Init
+    // Init + Analytics
     const app = initializeApp(firebaseConfig);
-    try { getAnalytics(app); } catch(_) {}
+    let analytics; try { analytics = getAnalytics(app); } catch(_) {}
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
@@ -299,16 +302,27 @@
     const btnAccept  = document.getElementById('btn-accept');
     const btnCancel  = document.getElementById('btn-cancel');
 
+    const btnCopy    = document.getElementById('btn-copy-link');
+    const btnLogout  = document.getElementById('btn-logout');
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu= document.getElementById('profileMenu');
+
     const elWelcome = document.getElementById('welcome');
     const elUser    = document.getElementById('userName');
     const elNick    = document.getElementById('userNick');
     const elAvatar  = document.getElementById('avatar');
 
-    // Menú de perfil
-    const profileBtn = document.getElementById('profileBtn');
-    const profileMenu = document.getElementById('profileMenu');
-    const btnCopy = document.getElementById('btn-copy-link');
+    // Catálogo y player
+    const gridEl    = document.getElementById('menu');
+    const heroCat   = document.querySelector('.hero-catalog');
+    const player    = document.getElementById('playerView');
+    const gameFrame = document.getElementById('gameFrame');
+    const gameTitle = document.getElementById('gameTitle');
+    const btnBack   = document.getElementById('btnBack');
+    const btnBack2  = document.getElementById('btnBack2');
+    const btnRandom = document.getElementById('btn-random');
 
+    // Mostrar/ocultar menú al tocar la foto
     profileBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       profileMenu.classList.toggle('hidden');
@@ -320,14 +334,6 @@
         }
       }
     });
-
-    // Catálogo y player
-    const gridEl    = document.getElementById('menu');
-    const player    = document.getElementById('playerView');
-    const gameFrame = document.getElementById('gameFrame');
-    const gameTitle = document.getElementById('gameTitle');
-    const btnBack   = document.getElementById('btnBack');
-    const btnBack2  = document.getElementById('btnBack2');
 
     // ===== SIEMPRE PEDIR INICIAR SESIÓN =====
     try { await signOut(auth); } catch(_) {}
@@ -408,9 +414,13 @@
       document.title = `Carletes Games · ${g.name}`;
       gameTitle.textContent = g.name;
       gameFrame.src = g.frame;
-      document.querySelector('.hero-catalog').classList.add('hidden');
+
+      heroCat.classList.add('hidden');
       gridEl.classList.add('hidden');
       player.classList.remove('hidden');
+
+      try { if (analytics) logEvent(analytics, 'select_content', { content_type: 'game', item_id: id, item_name: g.name }); } catch {}
+
       if(location.hash !== `#/play/${id}`) history.pushState({ id }, '', `#/play/${id}`);
     }
 
@@ -418,7 +428,7 @@
       document.title = 'Carletes Games — Acceso + Catálogo';
       gameFrame.src = '';
       player.classList.add('hidden');
-      document.querySelector('.hero-catalog').classList.remove('hidden');
+      heroCat.classList.remove('hidden');
       gridEl.classList.remove('hidden');
       if(location.hash.startsWith('#/play/')) history.pushState({}, '', '#/');
     }
@@ -443,27 +453,29 @@
     window.addEventListener('popstate', handleRoute);
     window.addEventListener('hashchange', handleRoute);
 
-    // Copiar URL con ?user=&nick=
-    btnCopy.addEventListener('click', async () => {
-      const url = new URL(location.href);
-      url.searchParams.set('user', elUser.textContent || 'usuario');
-      const nick = elNick.textContent && elNick.textContent !== '—' ? elNick.textContent : '';
-      if (nick) url.searchParams.set('nick', nick); else url.searchParams.delete('nick');
-      try {
-        await navigator.clipboard.writeText(url.toString());
-        btnCopy.textContent = '¡Copiado!';
-        setTimeout(()=>btnCopy.textContent='Copiar enlace con usuario', 1500);
-      } catch {
-        alert(url.toString());
-      }
+    // Botón: elegir juego random
+    btnRandom.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const r = Math.floor(Math.random()*GAMES.length);
+      const g = GAMES[r];
+      try { if (analytics) logEvent(analytics, 'random_play', { item_id: g.id, item_name: g.name }); } catch {}
+      openGame(g.id);
     });
 
+    // ===== APP flow =====
     function showApp(user){
       authView.classList.add('hidden');
       appView.classList.remove('hidden');
       buildWelcome(user);
+      try {
+        if (analytics && user?.uid) {
+          setUserId(analytics, user.uid);
+          const nick = localStorage.getItem('carletes_nick') || new URLSearchParams(location.search).get('nick') || '';
+          setUserProperties(analytics, { nick: nick || undefined });
+        }
+      } catch {}
       renderGrid();
-      if (location.hash) handleRoute(); // abre directo si viene con #/play/...
+      if (location.hash) handleRoute();
     }
 
     // Email/Password
@@ -475,6 +487,7 @@
         disableAuth(true);
         await signInWithEmailAndPassword(auth, email, pass);
         status('Inicio de sesión correcto.');
+        try { if (analytics) logEvent(analytics, 'login', { method: 'password' }); } catch {}
       } catch (e) {
         status(mapAuthError(e));
       } finally { disableAuth(false); }
@@ -496,6 +509,7 @@
         await updateProfile(cred.user, { displayName: name });
         localStorage.setItem('carletes_nick', nick);
         status('Cuenta creada e iniciada correctamente.');
+        try { if (analytics) logEvent(analytics, 'sign_up', { method: 'password' }); } catch {}
       } catch (e) {
         status(mapAuthError(e));
       } finally { disableAuth(false); }
@@ -507,6 +521,7 @@
         disableAuth(true);
         await signInWithPopup(auth, provider);
         status('Autenticado con Google.');
+        try { if (analytics) logEvent(analytics, 'login', { method: 'Google' }); } catch {}
       } catch (e) {
         const fallbackCodes = ['auth/popup-blocked','auth/popup-closed-by-user','auth/operation-not-supported-in-this-environment','auth/auth-domain-config-required','auth/unauthorized-domain'];
         if (fallbackCodes.includes(e?.code)) {
@@ -531,6 +546,7 @@
         const result = await getRedirectResult(auth);
         if (result && result.user) {
           status(`Autenticado como ${result.user.displayName || result.user.email}.`);
+          try { if (analytics) logEvent(analytics, 'login', { method: 'Google-redirect' }); } catch {}
           showApp(result.user);
         }
       } catch (e) {
@@ -543,25 +559,31 @@
       if (user) showApp(user);
     });
 
-    // Errores comunes
-    function mapAuthError(e){
-      const code = (e && e.code) ? e.code : '';
-      switch(code){
-        case 'auth/invalid-credential': return 'Credenciales inválidas.';
-        case 'auth/invalid-email': return 'Correo inválido.';
-        case 'auth/user-disabled': return 'Usuario deshabilitado.';
-        case 'auth/user-not-found': return 'Usuario no encontrado.';
-        case 'auth/wrong-password': return 'Contraseña incorrecta.';
-        case 'auth/email-already-in-use': return 'Ese correo ya está en uso.';
-        case 'auth/weak-password': return 'Contraseña débil (mín. 6).';
-        case 'auth/popup-blocked': return 'El navegador bloqueó la ventana emergente.';
-        case 'auth/popup-closed-by-user': return 'Cerraste la ventana de Google.';
-        case 'auth/operation-not-supported-in-this-environment': return 'El entorno no soporta ventanas emergentes. Usaremos redirección.';
-        case 'auth/unauthorized-domain': return 'Dominio no autorizado en Firebase (revísalo en Authentication → Settings).';
-        case 'auth/auth-domain-config-required': return 'Falta configurar el dominio de autenticación en Firebase.';
-        default: return 'Error de autenticación. Intenta nuevamente.';
+    // Cerrar sesión desde el menú de perfil
+    btnLogout.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        try { if (analytics) logEvent(analytics, 'logout'); } catch {}
+      } finally {
+        location.reload();
       }
-    }
+    });
+
+    // Copiar URL con ?user=&nick=
+    btnCopy.addEventListener('click', async () => {
+      const url = new URL(location.href);
+      url.searchParams.set('user', elUser.textContent || 'usuario');
+      const nick = elNick.textContent && elNick.textContent !== '—' ? elNick.textContent : '';
+      if (nick) url.searchParams.set('nick', nick); else url.searchParams.delete('nick');
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        try { if (analytics) logEvent(analytics, 'share', { method: 'copy_link' }); } catch {}
+        btnCopy.textContent = '¡Copiado!';
+        setTimeout(()=>btnCopy.textContent='Copiar enlace con usuario', 1500);
+      } catch {
+        alert(url.toString());
+      }
+    });
 
     // Estado inicial
     setTab('login');

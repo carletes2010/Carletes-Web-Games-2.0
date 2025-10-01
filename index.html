@@ -208,7 +208,7 @@
       <section id="playerView" class="hidden">
         <div class="header" role="banner">
           <a class="logo" href="#" id="btnBack" aria-label="Volver al catálogo">
-            <img src="img/rutadellogo" alt="" />
+            <img src="img/logo.png" alt="" />
             <span class="brand">Carletes Games</span>
           </a>
           <h2 class="title" id="gameTitle">Juego</h2>
@@ -569,21 +569,6 @@
       }
     });
 
-    // Copiar URL con ?user=&nick=
-    btnCopy.addEventListener('click', async () => {
-      const url = new URL(location.href);
-      url.searchParams.set('user', elUser.textContent || 'usuario');
-      const nick = elNick.textContent && elNick.textContent !== '—' ? elNick.textContent : '';
-      if (nick) url.searchParams.set('nick', nick); else url.searchParams.delete('nick');
-      try {
-        await navigator.clipboard.writeText(url.toString());
-        try { if (analytics) logEvent(analytics, 'share', { method: 'copy_link' }); } catch {}
-        btnCopy.textContent = '¡Copiado!';
-        setTimeout(()=>btnCopy.textContent='Copiar enlace con usuario', 1500);
-      } catch {
-        alert(url.toString());
-      }
-    });
 
     // Estado inicial
     setTab('login');

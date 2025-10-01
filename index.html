@@ -411,7 +411,7 @@
 
     function openGame(id){
       const g = findGame(id); if (!g) return;
-      document.title = `Carletes Games · ${g.name}`;
+      document.title = `INSTITUTO DE BIOLOGÍA MEXICANA`;
       gameTitle.textContent = g.name;
       gameFrame.src = g.frame;
 
@@ -425,7 +425,7 @@
     }
 
     function backToCatalog(){
-      document.title = 'Carletes Games — Acceso + Catálogo';
+      document.title = 'INSTITUTO DE BIOLOGÍA — Acceso';
       gameFrame.src = '';
       player.classList.add('hidden');
       heroCat.classList.remove('hidden');

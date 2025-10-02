@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Instituto de Biologia Mexicana</title>
-  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
-
-  <!-- Google Font: Lexend Deca -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Instituto de Biologia Mexicana</title>
+<link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
+<!-- Google Font: Lexend Deca -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
     :root {
       --bg: #ffffff;
       --fg: #0a0a0a;
@@ -35,13 +33,10 @@
         --shadow: 0 8px 20px rgba(0,0,0,.5);
       }
     }
-
     * { box-sizing: border-box; }
     html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font-family: 'Lexend Deca', sans-serif; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
-
     .wrap { max-width: 1100px; margin: 0 auto; padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom)); }
-
     /* Buttons */
     .btn { padding: 12px 20px; font-weight: 700; border-radius: 12px; border: 1px solid var(--accent); background: var(--accent); color: #fff; transition: background .2s ease, transform .1s ease; cursor: pointer; }
     .btn:hover { background: var(--accent-dark); }
@@ -49,7 +44,6 @@
     .btn.ghost { background: transparent; color: var(--accent); }
     .btn.ghost:hover { background: var(--accent); color:#fff; }
     .btn.full { width: 100%; }
-
     /* ======= LOGIN VIEW ======= */
     .center-screen { min-height: 100dvh; display: grid; place-items: center; padding: 20px; }
     .auth-card { width: 100%; max-width: 460px; background: var(--card); border: 1px solid var(--stroke); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; text-align: left; }
@@ -65,27 +59,22 @@
     input[type="email"], input[type="password"], input[type="text"]{ width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--stroke); background:#fff0; color:var(--fg); outline:none; }
     input::placeholder { color: var(--muted); }
     .notice { border: 1px dashed var(--stroke); color: var(--muted); padding: 12px; border-radius: 12px; font-size: 14px; }
-
     /* Modal legal */
     .modal-backdrop{ position: fixed; inset:0; background: rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; padding: 20px; }
     .modal{ width: 100%; max-width: 560px; background: var(--card); border: 1px solid var(--stroke); border-radius: 18px; box-shadow: var(--shadow); padding: 20px; text-align: left; }
     .modal h2{ margin: 0 0 6px; font-size: 20px; }
     .modal p{ color: var(--muted); margin: 0; }
     .modal .actions{ display:flex; gap:10px; margin-top:16px; }
-
     .hidden { display: none !important; }
-
     /* ======= APP (CATÁLOGO) VIEW ======= */
     .topbar { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(6px); background: color-mix(in srgb, var(--bg) 88%, transparent); border-bottom: 1px solid var(--stroke); }
     .topbar-inner { max-width: 1100px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 10px; justify-content: space-between; position: relative; }
     .profile { display:flex; align-items:center; gap:10px; color: var(--muted); font-size: 14px; cursor: pointer; }
     .profile .avatar { width:32px; height:32px; border-radius:999px; border:1px solid var(--stroke); object-fit: cover; }
     .profile-menu { position: absolute; right: 20px; top: 60px; background: var(--card); border: 1px solid var(--stroke); border-radius: 12px; box-shadow: var(--shadow); padding: 10px; width: 240px; z-index: 20; }
-
     .hero-catalog { text-align: center; padding: 80px 20px; background: var(--card); border: 1px solid var(--stroke); border-radius: 20px; box-shadow: var(--shadow); margin: 20px 0 30px; }
     .title-xl { font-size: clamp(28px, 6vw, 48px); font-weight: 800; margin: 0 0 12px; color: var(--fg); }
     .subtitle-lg { font-size: 16px; color: var(--muted); max-width: 740px; margin: 0 auto 24px; line-height: 1.5; }
-
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
     .card { background: var(--card); border: 1px solid var(--stroke); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: transform .15s ease; }
     .card:hover { transform: translateY(-3px); }
@@ -94,9 +83,7 @@
     .title-game { font-weight: 700; font-size: 15px; }
     .play { padding: 6px 12px; font-size: 14px; font-weight: 600; border: 1px solid var(--accent); border-radius: 8px; color: var(--accent); transition: background .2s ease, color .2s ease; }
     .play:hover { background: var(--accent); color: #fff; }
-
     footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 14px; }
-
     /* ===== Player (detalle de juego) ===== */
     .header{ position: sticky; top: 0; z-index: 20; padding: 10px var(--pad); margin: 0 0 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border-bottom: 1px solid var(--stroke); display:flex; align-items:center; justify-content:center; }
     .logo{ position: absolute; left: max(12px, env(safe-area-inset-left)); top: 50%; transform: translateY(-50%); display:flex; align-items:center; gap:8px; }
@@ -110,156 +97,152 @@
     .hint{ font-size: 12px; color: var(--muted) }
     .panic{ position: fixed; right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); z-index: 50; padding: 14px 18px; border-radius: 14px; font-weight: 900; border: 2px solid #000; background: #000; color:#fff; box-shadow: 0 6px 18px rgba(0,0,0,.22); letter-spacing:.2px; }
     .panic:active{ transform: translateY(1px) }
-  </style>
+</style>
 </head>
 <body>
-  <!-- ===== LOGIN ===== -->
-  <div id="authView" class="center-screen">
-    <div class="auth-card">
-      <div class="hero">
-        <div class="badge">Acceso a Carletes Games</div>
-        <h1 class="title">Inicia sesión para continuar</h1>
-        <p class="subtitle">Crea tu cuenta con nombre/apodo o usa Google.</p>
+<!-- ===== LOGIN ===== -->
+<div id="authView" class="center-screen">
+  <div class="auth-card">
+    <div class="hero">
+      <div class="badge">Acceso a Carletes Games</div>
+      <h1 class="title">Inicia sesión para continuar</h1>
+      <p class="subtitle">Crea tu cuenta con nombre/apodo o usa Google.</p>
+    </div>
+    <div id="authArea">
+      <div class="tabs" role="tablist" aria-label="Modo de acceso">
+        <div id="tab-login"  class="tab active" role="tab" tabindex="0">Iniciar sesión</div>
+        <div id="tab-signup" class="tab"        role="tab" tabindex="0">Crear cuenta</div>
       </div>
-
-      <div id="authArea">
-        <div class="tabs" role="tablist" aria-label="Modo de acceso">
-          <div id="tab-login"  class="tab active" role="tab" tabindex="0">Iniciar sesión</div>
-          <div id="tab-signup" class="tab"        role="tab" tabindex="0">Crear cuenta</div>
+      <!-- Login -->
+      <div id="panel-login" style="margin-top:12px;">
+        <div class="field">
+          <div class="label">Correo</div>
+          <input id="login-email" type="email" placeholder="tu@correo.com" autocomplete="email" />
         </div>
-
-        <!-- Login -->
-        <div id="panel-login" style="margin-top:12px;">
-          <div class="field">
-            <div class="label">Correo</div>
-            <input id="login-email" type="email" placeholder="tu@correo.com" autocomplete="email" />
-          </div>
-          <div class="field">
-            <div class="label">Contraseña</div>
-            <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
-          </div>
+        <div class="field">
+          <div class="label">Contraseña</div>
+          <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
           <button id="btn-login-email" class="btn full">Iniciar sesión</button>
+      </div>
+      <!-- Signup -->
+      <div id="panel-signup" style="margin-top:12px; display:none;">
+        <div class="field">
+          <div class="label">Nombre</div>
+          <input id="signup-name" type="text" placeholder="Tu nombre" autocomplete="name" />
         </div>
-
-        <!-- Signup -->
-        <div id="panel-signup" style="margin-top:12px; display:none;">
-          <div class="field">
-            <div class="label">Nombre</div>
-            <input id="signup-name" type="text" placeholder="Tu nombre" autocomplete="name" />
-          </div>
-          <div class="field">
-            <div class="label">Apodo</div>
-            <input id="signup-nick" type="text" placeholder="Tu apodo" />
-          </div>
-          <div class="field">
-            <div class="label">Correo</div>
-            <input id="signup-email" type="email" placeholder="tu@correo.com" autocomplete="email" />
-          </div>
-          <div class="field">
-            <div class="label">Contraseña (mín. 6)</div>
-            <input id="signup-password" type="password" placeholder="••••••••" autocomplete="new-password" />
-          </div>
-          <button id="btn-signup-email" class="btn full">Crear cuenta</button>
+        <div class="field">
+          <div class="label">Apodo</div>
+          <input id="signup-nick" type="text" placeholder="Tu apodo" />
         </div>
+        <div class="field">
+          <div class="label">Correo</div>
+          <input id="signup-email" type="email" placeholder="tu@correo.com" autocomplete="email" />
+        </div>
+        <div class="field">
+          <div class="label">Contraseña (mín. 6)</div>
+          <input id="signup-password" type="password" placeholder="••••••••" autocomplete="new-password" />
+        </div>
+        <button id="btn-signup-email" class="btn full">Crear cuenta</button>
+      </div>
+      <div style="height:12px"></div>
+      <button id="btn-google" class="btn ghost full">Continuar con Google</button>
+      <div style="height:12px"></div>
+      <div id="status" class="notice">Esperando autenticación…</div>
+    </div>
+  </div>
+</div>
 
-        <div style="height:12px"></div>
-        <button id="btn-google" class="btn ghost full">Continuar con Google</button>
-
-        <div style="height:12px"></div>
-        <div id="status" class="notice">Esperando autenticación…</div>
+<!-- ===== APP / CATÁLOGO ===== -->
+<div id="appView" class="hidden">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="profile" id="profileBtn">
+        <img id="avatar" class="avatar" alt="avatar" src="" onerror="this.style.display='none'"/>
+        <div>
+          <div style="font-weight:700">Bienvenido, <span id="userName">usuario</span></div>
+          <div style="font-size:12px; color:var(--muted)">Apodo: <span id="userNick">—</span></div>
+        </div>
+      </div>
+      <div class="profile-menu hidden" id="profileMenu">
+        <button id="btn-copy-link" class="btn full">Copiar enlace con usuario</button>
+        <div style="height:8px"></div>
+        <button id="btn-logout" class="btn ghost full">Cerrar sesión</button>
       </div>
     </div>
   </div>
 
-  <!-- ===== APP / CATÁLOGO ===== -->
-  <div id="appView" class="hidden">
-    <div class="topbar">
-      <div class="topbar-inner">
-        <div class="profile" id="profileBtn">
-          <img id="avatar" class="avatar" alt="avatar" src="" onerror="this.style.display='none'"/>
-          <div>
-            <div style="font-weight:700">Bienvenido, <span id="userName">usuario</span></div>
-            <div style="font-size:12px; color:var(--muted)">Apodo: <span id="userNick">—</span></div>
-          </div>
+  <div class="wrap">
+    <!-- Hero catálogo -->
+    <section class="hero-catalog">
+      <div class="badge">🎮 Carletes Games</div>
+      <h1 class="title-xl">Carletes Games ha vuelto</h1>
+      <p id="welcome" class="subtitle-lg"></p>
+      <div class="cta" style="display:flex; justify-content:center; gap:12px;">
+        <a href="#menu" class="btn">Entrar a jugar</a>
+        <a href="#menu" id="btn-random" class="btn ghost">Elegir un juego random</a>
+      </div>
+    </section>
+
+    <!-- Menú de juegos (se llena por JS) -->
+    <main id="menu" class="grid"></main>
+
+    <!-- Player (detalle de juego en la misma página) -->
+    <section id="playerView" class="hidden">
+      <div class="header" role="banner">
+        <a class="logo" href="#" id="btnBack" aria-label="Volver al catálogo">
+          <img src="img/logo.png" alt="" />
+          <span class="brand">Carletes Games</span>
+        </a>
+        <h2 class="title" id="gameTitle">Juego</h2>
+      </div>
+
+      <div class="stage" aria-label="Juego">
+        <div class="stage-inner">
+          <!-- IFRAME BLOQUEADO (sin allowfullscreen, sin fullscreen en allow) -->
+          <iframe
+            id="gameFrame"
+            class="game"
+            src=""
+            title="Juego"
+            allow="gamepad; clipboard-read; clipboard-write"
+            referrerpolicy="no-referrer"
+            sandbox="allow-scripts allow-same-origin allow-pointer-lock">
+          </iframe>
         </div>
-        <div class="profile-menu hidden" id="profileMenu">
-          <button id="btn-copy-link" class="btn full">Copiar enlace con usuario</button>
-          <div style="height:8px"></div>
-          <button id="btn-logout" class="btn ghost full">Cerrar sesión</button>
+
+        <div class="controls">
+          <span class="hint" id="gameHint">Consejo: gira tu iPad a horizontal para más espacio.</span>
+          <div style="display:flex; gap:10px;">
+            <button id="btn-fullscreen" class="btn">Pantalla completa</button>
+            <button class="btn ghost" id="btnBack2">← Menú</button>
+            <a class="btn" href="https://www.google.com" target="_blank" rel="noopener noreferrer nofollow">Pánico</a>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="wrap">
-      <!-- Hero catálogo -->
-      <section class="hero-catalog">
-        <div class="badge">🎮 Carletes Games</div>
-        <h1 class="title-xl">Carletes Games ha vuelto</h1>
-        <p id="welcome" class="subtitle-lg"></p>
-        <div class="cta" style="display:flex; justify-content:center; gap:12px;">
-          <a href="#menu" class="btn">Entrar a jugar</a>
-          <a href="#menu" id="btn-random" class="btn ghost">Elegir un juego random</a>
-        </div>
-      </section>
+    <footer>Carletes Games · Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
+  </div>
+</div>
 
-      <!-- Menú de juegos (se llena por JS) -->
-      <main id="menu" class="grid"></main>
-
-      <!-- Player (detalle de juego en la misma página) -->
-      <section id="playerView" class="hidden">
-        <div class="header" role="banner">
-          <a class="logo" href="#" id="btnBack" aria-label="Volver al catálogo">
-            <img src="img/logo.png" alt="" />
-            <span class="brand">Carletes Games</span>
-          </a>
-          <h2 class="title" id="gameTitle">Juego</h2>
-        </div>
-
-        <div class="stage" aria-label="Juego">
-          <div class="stage-inner">
-            <iframe
-  id="gameFrame"
-  class="game"
-  src=""
-  title="Juego"
-  allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
-  allowfullscreen
-  referrerpolicy="no-referrer"
-  sandbox="allow-scripts allow-pointer-lock">
-</iframe>
-
-          </div>
-          <div class="controls">
-            <span class="hint" id="gameHint">Consejo: gira tu iPad a horizontal para más espacio.</span>
-            <div style="display:flex; gap:10px;">
-              <button class="btn ghost" id="btnBack2">← Menú</button>
-              <a class="btn" href="https://www.google.com" rel="nofollow">Pánico</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer>Carletes Games · Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
+<!-- ===== MODAL LEGAL ===== -->
+<div id="legalModal" class="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="legal-title">
+    <h2 id="legal-title">Aviso importante</h2>
+    <p>
+      Accedes bajo tu propia responsabilidad y <strong>deslindas a “carletes”</strong> de cualquier uso indebido de esta página o de sus contenidos.
+      Si no estás de acuerdo, presiona “Cancelar”.
+    </p>
+    <div class="actions">
+      <button id="btn-accept" class="btn">Acepto</button>
+      <button id="btn-cancel" class="btn ghost">Cancelar</button>
     </div>
   </div>
+</div>
 
-  <!-- ===== MODAL LEGAL ===== -->
-  <div id="legalModal" class="modal-backdrop">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="legal-title">
-      <h2 id="legal-title">Aviso importante</h2>
-      <p>
-        Accedes bajo tu propia responsabilidad y <strong>deslindas a “carletes”</strong> de cualquier uso indebido de esta página o de sus contenidos.
-        Si no estás de acuerdo, presiona “Cancelar”.
-      </p>
-      <div class="actions">
-        <button id="btn-accept" class="btn">Acepto</button>
-        <button id="btn-cancel" class="btn ghost">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== Firebase + Lógica (SPA + Analytics) ===== -->
-  <script type="module">
+<!-- ===== Firebase + Lógica (SPA + Analytics) ===== -->
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
     import { getAnalytics, logEvent, setUserId, setUserProperties } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
     import {
@@ -290,32 +273,26 @@
     const authView   = document.getElementById('authView');
     const appView    = document.getElementById('appView');
     const loaderTxt  = document.getElementById('status');
-
     const tabLogin   = document.getElementById('tab-login');
     const tabSignup  = document.getElementById('tab-signup');
     const panelLogin = document.getElementById('panel-login');
     const panelSignup= document.getElementById('panel-signup');
-
     const loginEmail = document.getElementById('login-email');
     const loginPass  = document.getElementById('login-password');
     const signupName = document.getElementById('signup-name');
     const signupNick = document.getElementById('signup-nick');
     const signupEmail= document.getElementById('signup-email');
     const signupPass = document.getElementById('signup-password');
-
     const btnLoginEmail  = document.getElementById('btn-login-email');
     const btnSignupEmail = document.getElementById('btn-signup-email');
     const btnGoogle      = document.getElementById('btn-google');
-
     const legalModal = document.getElementById('legalModal');
     const btnAccept  = document.getElementById('btn-accept');
     const btnCancel  = document.getElementById('btn-cancel');
-
     const btnCopy    = document.getElementById('btn-copy-link');
     const btnLogout  = document.getElementById('btn-logout');
     const profileBtn = document.getElementById('profileBtn');
     const profileMenu= document.getElementById('profileMenu');
-
     const elWelcome = document.getElementById('welcome');
     const elUser    = document.getElementById('userName');
     const elNick    = document.getElementById('userNick');
@@ -330,6 +307,7 @@
     const btnBack   = document.getElementById('btnBack');
     const btnBack2  = document.getElementById('btnBack2');
     const btnRandom = document.getElementById('btn-random');
+    const btnFS     = document.getElementById('btn-fullscreen');
 
     // Mostrar/ocultar menú al tocar la foto
     profileBtn.addEventListener('click', (e) => {
@@ -389,7 +367,7 @@
       { id:'uno',            name:'UNO',                 thumb:'img/uno.jpg',                               frame:'gamefiles/uno/index.html' },
       { id:'clashroyale',    name:'Clash Royale',        thumb:'img/ClashRoyale.png',                        frame:'gamefiles/ClashRoyale/index.html' },
       { id:'blockblast',     name:'Block Blast',         thumb:'img/blockblast.jpg',                         frame:'gamefiles/blockblast/index.html' },
-      { id:'retrobowl',      name:'Retro Bowl',          thumb:'img/retrobowl.png',                          frame:'gamefiles/RetroBowl/Hindex.html' },
+      { id:'retrobowl',      name:'Retro Bowl',          thumb:'img/retrobowl.png',                          frame:'gamefiles/RetroBowl/index.html' },
       { id:'angrybirds',     name:'Angry Birds',         thumb:'img/angrybirds.png',                         frame:'gamefiles/angrybirds/fullscreen.html' },
       { id:'youtube',        name:'Youtube Unblocked',   thumb:'img/YT.png',                                 frame:'https://carletes2010.github.io/mahara/' },
       { id:'moneyroller',    name:'Money Roller',        thumb:'img/money-roller.png',                       frame:'gamefiles/money-roller-main/index.html' },
@@ -405,15 +383,15 @@
 
     function renderGrid(){
       gridEl.innerHTML = GAMES.map(g => `
-        <article class="card" data-game="${g.id}">
-          <a href="#/play/${g.id}" class="play-link" data-game="${g.id}">
-            <img src="${g.thumb}" alt="${g.name}" class="thumb">
-          </a>
-          <div class="meta">
-            <span class="title-game">${g.name}</span>
-            <a href="#/play/${g.id}" class="play" data-game="${g.id}">Jugar</a>
-          </div>
-        </article>`).join('');
+<article class="card" data-game="${g.id}">
+  <a href="#/play/${g.id}" class="play-link" data-game="${g.id}">
+    <img src="${g.thumb}" alt="${g.name}" class="thumb">
+  </a>
+  <div class="meta">
+    <span class="title-game">${g.name}</span>
+    <a href="#/play/${g.id}" class="play" data-game="${g.id}">Jugar</a>
+  </div>
+</article>`).join('');
     }
 
     function findGame(id){ return GAMES.find(g => g.id === id); }
@@ -422,6 +400,8 @@
       const g = findGame(id); if (!g) return;
       document.title = `INSTITUTO DE BIOLOGÍA MEXICANA`;
       gameTitle.textContent = g.name;
+
+      // Carga segura del juego
       gameFrame.src = g.frame;
 
       heroCat.classList.add('hidden');
@@ -429,13 +409,15 @@
       player.classList.remove('hidden');
 
       try { if (analytics) logEvent(analytics, 'select_content', { content_type: 'game', item_id: id, item_name: g.name }); } catch {}
-
       if(location.hash !== `#/play/${id}`) history.pushState({ id }, '', `#/play/${id}`);
     }
 
     function backToCatalog(){
       document.title = 'INSTITUTO DE BIOLOGÍA — Acceso';
-      gameFrame.src = '';
+
+      // Apaga cualquier script del juego y libera el iframe
+      killGameFrame();
+
       player.classList.add('hidden');
       heroCat.classList.remove('hidden');
       gridEl.classList.remove('hidden');
@@ -453,6 +435,17 @@
     // Botones “← Menú”
     btnBack.addEventListener('click', (e)=>{ e.preventDefault(); backToCatalog(); });
     btnBack2.addEventListener('click', (e)=>{ e.preventDefault(); backToCatalog(); });
+
+    // Botón: Pantalla completa (controlado por el parent, no el iframe)
+    btnFS.addEventListener('click', async ()=>{
+      try{
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        } else if (gameFrame.requestFullscreen) {
+          await gameFrame.requestFullscreen();
+        }
+      } catch(_) {}
+    });
 
     // Router por hash (#/play/id)
     function handleRoute(){
@@ -487,8 +480,17 @@
       if (location.hash) handleRoute();
     }
 
+    // ---- Seguridad: apagar iframe antes de cualquier login/redirect
+    function killGameFrame(){
+      try {
+        gameFrame.src = 'about:blank';
+        setTimeout(()=>{ gameFrame.src = ''; }, 0);
+      } catch(_) {}
+    }
+
     // Email/Password
     btnLoginEmail.addEventListener('click', async () => {
+      killGameFrame();
       const email = loginEmail.value.trim();
       const pass  = loginPass.value.trim();
       if(!email || !pass) return status('Correo y contraseña son requeridos.');
@@ -504,6 +506,7 @@
 
     // Signup con nombre y apodo
     btnSignupEmail.addEventListener('click', async () => {
+      killGameFrame();
       const name  = signupName.value.trim();
       const nick  = signupNick.value.trim();
       const email = signupEmail.value.trim();
@@ -526,6 +529,7 @@
 
     // Google con fallback a redirect
     btnGoogle.addEventListener('click', async () => {
+      killGameFrame();
       try {
         disableAuth(true);
         await signInWithPopup(auth, provider);
@@ -536,6 +540,7 @@
         if (fallbackCodes.includes(e?.code)) {
           try {
             status('Abriendo Google con redirección…');
+            killGameFrame();
             await signInWithRedirect(auth, provider);
             return;
           } catch (e2) {
@@ -578,9 +583,24 @@
       }
     });
 
-
     // Estado inicial
     setTab('login');
-  </script>
+
+    // ====== Mapeo simple de errores de auth (opcional, si ya lo tienes puedes omitir) ======
+    function mapAuthError(e){
+      const code = e?.code || '';
+      const dict = {
+        'auth/invalid-email': 'Correo inválido.',
+        'auth/missing-password': 'Falta la contraseña.',
+        'auth/invalid-credential': 'Credenciales inválidas.',
+        'auth/user-not-found': 'Usuario no encontrado.',
+        'auth/wrong-password': 'Contraseña incorrecta.',
+        'auth/email-already-in-use': 'Ese correo ya está registrado.',
+        'auth/weak-password': 'Contraseña demasiado débil.',
+        'auth/network-request-failed': 'Fallo de red. Intenta de nuevo.',
+      };
+      return dict[code] || ('Error: ' + (e?.message || code));
+    }
+</script>
 </body>
 </html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Carletes Games — Acceso y Catálogo</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a; --fg:#f9fafb; --muted:#9ca3af; --card:#111; --stroke:#222;
+    --accent:#3b82f6; --accent-2:#2563eb; --radius:16px; --shadow:0 8px 24px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  .btn{padding:12px 18px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--accent)}
+  .btn.ghost:hover{background:var(--accent);color:#fff}
+  .btn.full{width:100%}
+
+  /* Login */
+  .center{min-height:100dvh;display:grid;place-items:center;padding:24px}
+  .card{width:100%;max-width:480px;background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+  .hero{text-align:center;margin-bottom:10px}
+  .badge{display:inline-block;border:1px solid var(--accent);color:var(--accent);font-weight:800;border-radius:999px;padding:6px 12px;margin-bottom:8px}
+  .title{font-size:clamp(24px,4vw,32px);font-weight:900;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;border:1px solid var(--stroke);border-radius:12px;padding:8px;margin-top:8px}
+  .tab{padding:10px 12px;text-align:center;border:1px solid transparent;border-radius:10px;color:var(--muted);font-weight:800;cursor:pointer}
+  .tab.active{color:var(--fg);border-color:var(--stroke);background:#ffffff08}
+  .field{margin:10px 0}
+  .label{font-size:12px;font-weight:800;margin-bottom:6px}
+  input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--stroke);background:transparent;color:var(--fg);outline:none}
+  .notice{border:1px dashed var(--stroke);color:var(--muted);padding:10px;border-radius:12px;font-size:14px}
+
+  /* Catálogo */
+  .topbar{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke)}
+  .topbar-inner{max-width:1100px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+  .profile{font-size:14px;color:var(--muted)}
+  .hero-catalog{margin:20px 0 26px;padding:60px 20px;background:var(--card);border:1px solid var(--stroke);border-radius:20px;box-shadow:var(--shadow);text-align:center}
+  .title-xl{font-size:clamp(28px,6vw,44px);font-weight:900;margin:0 0 10px}
+  .subtitle{max-width:740px;margin:0 auto 18px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+  .card-game{background:var(--card);border:1px solid var(--stroke);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:.15s transform}
+  .card-game:hover{transform:translateY(-2px)}
+  .thumb{width:100%;aspect-ratio:16/11;object-fit:contain;background:#000}
+  .meta{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+  .hidden{display:none!important}
+  footer{margin:30px 0;text-align:center;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<!-- ===== LOGIN ===== -->
+<div id="authView" class="center">
+  <div class="card">
+    <div class="hero">
+      <div class="badge">Acceso a Carletes Games</div>
+      <h1 class="title">Inicia sesión para continuar</h1>
+      <p class="sub">Crea cuenta con correo o usa Google.</p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <div id="tab-login"  class="tab active">Iniciar sesión</div>
+      <div id="tab-signup" class="tab">Crear cuenta</div>
+    </div>
+
+    <!-- Login -->
+    <div id="panel-login" style="margin-top:12px">
+      <div class="field"><div class="label">Correo</div><input id="login-email" type="email" placeholder="tu@correo.com"></div>
+      <div class="field"><div class="label">Contraseña</div><input id="login-pass" type="password" placeholder="••••••••"></div>
+      <button id="btn-login" class="btn full">Iniciar sesión</button>
+    </div>
+
+    <!-- Signup -->
+    <div id="panel-signup" class="hidden" style="margin-top:12px">
+      <div class="field"><div class="label">Nombre</div><input id="su-name" type="text" placeholder="Tu nombre"></div>
+      <div class="field"><div class="label">Apodo</div><input id="su-nick" type="text" placeholder="Tu apodo"></div>
+      <div class="field"><div class="label">Correo</div><input id="su-email" type="email" placeholder="tu@correo.com"></div>
+      <div class="field"><div class="label">Contraseña (mín. 6)</div><input id="su-pass" type="password" placeholder="••••••••"></div>
+      <button id="btn-signup" class="btn full">Crear cuenta</button>
+    </div>
+
+    <div style="height:10px"></div>
+    <button id="btn-google" class="btn ghost full">Continuar con Google</button>
+    <div style="height:10px"></div>
+    <div id="status" class="notice">Esperando autenticación…</div>
+  </div>
+</div>
+
+<!-- ===== APP / CATÁLOGO ===== -->
+<div id="appView" class="hidden">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div>🎮 <strong>Carletes Games</strong></div>
+      <div class="profile">Bienvenido, <strong id="userName">usuario</strong> · <a id="logout" href="#">Cerrar sesión</a></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero-catalog">
+      <div class="badge">Catálogo</div>
+      <h2 class="title-xl">Elige un juego para abrir</h2>
+      <p class="subtitle">Los juegos se abrirán en <code>frame.html?{id}</code>. Si recargas, volverá a pedir login.</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <a href="#menu" id="btn-random" class="btn ghost">Juego al azar</a>
+      </div>
+    </section>
+
+    <main id="menu" class="grid"></main>
+    <footer>Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAnalytics, logEvent, setUserId } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+  import {
+    getAuth, onAuthStateChanged, updateProfile, signOut,
+    signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult
+  } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+  // === Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyAdIYosKvktrWeuoyrupSVRLE3ekfv74IU",
+    authDomain: "carletes-games.firebaseapp.com",
+    projectId: "carletes-games",
+    storageBucket: "carletes-games.firebasestorage.app",
+    messagingSenderId: "6199017607",
+    appId: "1:6199017607:web:f1a2409202bdf08e3bf822",
+    measurementId: "G-DS1SXZ8QN2"
+  };
+  const app = initializeApp(firebaseConfig);
+  let analytics; try{ analytics = getAnalytics(app) }catch{}
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider(); provider.setCustomParameters({ prompt:'select_account' });
+
+  // === DOM ===
+  const authView = document.getElementById('authView');
+  const appView  = document.getElementById('appView');
+  const statusEl = document.getElementById('status');
+  const userName = document.getElementById('userName');
+  const logout   = document.getElementById('logout');
+
+  const tabLogin = document.getElementById('tab-login');
+  const tabSignup= document.getElementById('tab-signup');
+  const panelLogin = document.getElementById('panel-login');
+  const panelSignup= document.getElementById('panel-signup');
+
+  const loginEmail = document.getElementById('login-email');
+  const loginPass  = document.getElementById('login-pass');
+  const suName  = document.getElementById('su-name');
+  const suNick  = document.getElementById('su-nick');
+  const suEmail = document.getElementById('su-email');
+  const suPass  = document.getElementById('su-pass');
+
+  const btnLogin = document.getElementById('btn-login');
+  const btnSignup= document.getElementById('btn-signup');
+  const btnGoogle= document.getElementById('btn-google');
+
+  const menu = document.getElementById('menu');
+  const btnRandom = document.getElementById('btn-random');
+
+  // === util ===
+  function setTab(which){
+    const isLogin = which === 'login';
+    tabLogin.classList.toggle('active', isLogin);
+    tabSignup.classList.toggle('active', !isLogin);
+    panelLogin.classList.toggle('hidden', !isLogin);
+    panelSignup.classList.toggle('hidden', isLogin);
+  }
+  tabLogin.onclick = () => setTab('login');
+  tabSignup.onclick = () => setTab('signup');
+  function msg(t){ statusEl.textContent = t }
+
+  // === Juegos (id -> frame url) ===
+  const GAMES = [
+    { id:'drivemad',       name:'Drive Mad',           thumb:'img/drivemad.png',                         frame:'gamefiles/DriveMad/index.html' },
+    { id:'monkeymart',     name:'Monkey Mart',         thumb:'img/monkeymart.png',                        frame:'https://carletes2010.github.io/Monkey-Mart/' },
+    { id:'subwaysurfers',  name:'Subway Surfers',      thumb:'img/subway-surfers-haunted-hood.webp',      frame:'gamefiles/Subway-Surfers-Haunted-Hood-main/index.html' },
+    { id:'uno',            name:'UNO',                 thumb:'img/uno.jpg',                               frame:'gamefiles/uno/index.html' },
+    { id:'clashroyale',    name:'Clash Royale',        thumb:'img/ClashRoyale.png',                        frame:'gamefiles/ClashRoyale/index.html' },
+    { id:'blockblast',     name:'Block Blast',         thumb:'img/blockblast.jpg',                         frame:'gamefiles/blockblast/index.html' },
+    { id:'retrobowl',      name:'Retro Bowl',          thumb:'img/retrobowl.png',                          frame:'gamefiles/RetroBowl/index.html' },
+    { id:'angrybirds',     name:'Angry Birds',         thumb:'img/angrybirds.png',                         frame:'gamefiles/angrybirds/fullscreen.html' },
+    { id:'youtube',        name:'Youtube Unblocked',   thumb:'img/YT.png',                                 frame:'https://carletes2010.github.io/mahara/' },
+    { id:'moneyroller',    name:'Money Roller',        thumb:'img/money-roller.png',                       frame:'gamefiles/money-roller-main/index.html' },
+    { id:'pool8',          name:'8 Ball Pool',         thumb:'img/8ballpool.png',                          frame:'gamefiles/8-ball-pool-main/index.html' },
+    { id:'jetpack',        name:'Jetpack Joyride',     thumb:'img/Jetpack.png',                            frame:'gamefiles/Jetpack-Joyride-main/index.html' },
+    { id:'tinyfishing',    name:'Tiny-Fishing',        thumb:'img/tiny-fishing.png',                       frame:'gamefiles/Tiny-Fishing-main/index.html' },
+    { id:'ninjafruit',     name:'Ninja-Fruit',         thumb:'img/fruit-ninja.png',                        frame:'gamefiles/Ninja-Fruit-main/index.html' },
+    { id:'asmallworldcup', name:'A Small World Cup',   thumb:'img/asmallworldcup.png',                     frame:'gamefiles/asmallworldcup-main/index.html' },
+    { id:'eggycar',        name:'EGGY CAR',            thumb:'img/Eggy-Car.png',                           frame:'gamefiles/eggycar-main/index.html' },
+    { id:'clashoftanks',   name:'Clash Of Tanks',      thumb:'img/clash-of-tanks.png',                     frame:'gamefiles/ClashOfTanks-gh-pages/index.html' },
+    { id:'penalty2',       name:'Penalty Shooters 2',  thumb:'img/penalty-shooters-2.png',                 frame:'gamefiles/penalty-shooters-2-main/index.html' }
+  ];
+  const gameById = Object.fromEntries(GAMES.map(g => [g.id, g]));
+
+  function renderCatalog(){
+    menu.innerHTML = GAMES.map(g => `
+      <article class="card-game">
+        <a class="play" href="frame.html?${encodeURIComponent(g.id)}" title="Abrir ${g.name}">
+          <img class="thumb" src="${g.thumb}" alt="${g.name}">
+        </a>
+        <div class="meta">
+          <span style="font-weight:800">${g.name}</span>
+          <a class="btn" style="padding:8px 12px" href="frame.html?${encodeURIComponent(g.id)}">Jugar</a>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  // Random
+  btnRandom.onclick = (e)=>{
+    e.preventDefault();
+    const r = Math.floor(Math.random()*GAMES.length);
+    location.href = `frame.html?${encodeURIComponent(GAMES[r].id)}`;
+  };
+
+  // === Login actions ===
+  btnLogin.onclick = async ()=>{
+    const email = (loginEmail.value||'').trim();
+    const pass  = (loginPass.value||'').trim();
+    if(!email || !pass) return msg('Correo y contraseña son requeridos.');
+    try{
+      await signInWithEmailAndPassword(auth, email, pass);
+      msg('Acceso correcto.');
+      try{ analytics && logEvent(analytics,'login',{method:'password'}) }catch{}
+    }catch(e){ msg(mapAuthError(e)) }
+  };
+
+  btnSignup.onclick = async ()=>{
+    const name  = (suName.value||'').trim();
+    const nick  = (suNick.value||'').trim();
+    const email = (suEmail.value||'').trim();
+    const pass  = (suPass.value||'').trim();
+    if(!name) return msg('Escribe tu nombre.');
+    if(!nick) return msg('Escribe tu apodo.');
+    if(!email) return msg('El correo es requerido.');
+    if(pass.length<6) return msg('Contraseña mínima de 6.');
+    try{
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(cred.user,{ displayName:name });
+      localStorage.setItem('carletes_nick', nick);
+      msg('Cuenta creada e iniciada.');
+      try{ analytics && logEvent(analytics,'sign_up',{method:'password'}) }catch{}
+    }catch(e){ msg(mapAuthError(e)) }
+  };
+
+  btnGoogle.onclick = async ()=>{
+    try{
+      await signInWithPopup(auth, provider);
+      msg('Autenticado con Google.');
+      try{ analytics && logEvent(analytics,'login',{method:'Google'}) }catch{}
+    }catch(e){
+      const fb = ['auth/popup-blocked','auth/popup-closed-by-user','auth/operation-not-supported-in-this-environment','auth/auth-domain-config-required','auth/unauthorized-domain'];
+      if(fb.includes(e?.code)){
+        msg('Redirigiendo a Google…');
+        await signInWithRedirect(auth, provider);
+      } else {
+        msg(mapAuthError(e));
+      }
+    }
+  };
+
+  // Cerrar sesión
+  logout.onclick = async (e)=>{
+    e.preventDefault();
+    try{ await signOut(auth); analytics && logEvent(analytics,'logout') }finally{ location.reload() }
+  };
+
+  // === Mostrar catálogo cuando hay sesión ===
+  function showApp(user){
+    authView.classList.add('hidden');
+    appView.classList.remove('hidden');
+    userName.textContent = user.displayName || user.email || 'usuario';
+    try{ analytics && user?.uid && setUserId(analytics, user.uid) }catch{}
+    renderCatalog();
+  }
+
+  // === Política: pedir login al recargar la página ===
+  (async ()=>{
+    const nav = performance.getEntriesByType('navigation')[0];
+    const isReload = nav && nav.type === 'reload';
+    if(isReload){
+      try{ await signOut(auth) }catch{}
+    }
+  })();
+
+  // Redirect result (Google)
+  (async ()=>{
+    try{
+      const res = await getRedirectResult(auth);
+      if(res?.user){ msg(`Autenticado como ${res.user.displayName || res.user.email}.`); showApp(res.user) }
+    }catch(e){ msg(mapAuthError(e)) }
+  })();
+
+  // Estado de auth
+  onAuthStateChanged(auth, (user)=>{
+    if(user) showApp(user);
+    else { authView.classList.remove('hidden'); appView.classList.add('hidden') }
+  });
+
+  // UX
+  setTab('login');
+  function mapAuthError(e){
+    const code = e?.code || '';
+    const dict = {
+      'auth/invalid-email':'Correo inválido.',
+      'auth/missing-password':'Falta la contraseña.',
+      'auth/invalid-credential':'Credenciales inválidas.',
+      'auth/user-not-found':'Usuario no encontrado.',
+      'auth/wrong-password':'Contraseña incorrecta.',
+      'auth/email-already-in-use':'Ese correo ya está registrado.',
+      'auth/weak-password':'Contraseña demasiado débil.',
+      'auth/network-request-failed':'Fallo de red. Intenta de nuevo.',
+    };
+    return dict[code] || ('Error: '+(e?.message||code));
+  }
+</script>
+</body>
+</html>

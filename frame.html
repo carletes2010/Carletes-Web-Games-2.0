@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Carletes Games — Jugando…</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#0a0a0a; --fg:#f9fafb; --muted:#9ca3af; --card:#111; --stroke:#222; --accent:#3b82f6; --radius:18px }
+  *{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
+  .hidden{display:none!important}
+  .center{min-height:100dvh;display:grid;place-items:center;padding:20px}
+  .card{width:100%;max-width:520px;background:var(--card);border:1px solid var(--stroke);border-radius:18px;padding:20px}
+  .btn{padding:12px 18px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:12px;font-weight:900;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--accent)}
+  .label{font-size:12px;font-weight:800;margin-bottom:6px}
+  input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--stroke);background:transparent;color:var(--fg);outline:none}
+  .notice{border:1px dashed var(--stroke);color:var(--muted);padding:10px;border-radius:12px;font-size:14px;margin-top:10px}
+  .top{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:10px;padding:10px 14px}
+  .title{margin:0;font-weight:900}
+  .stage{margin:12px;padding:0 12px}
+  .frame-wrap{border:1px solid var(--stroke);border-radius:18px;overflow:hidden;background:#000}
+  .game{display:block;width:100%;aspect-ratio:16/9;height:calc(100svh - 160px);max-height:calc(100svh - 160px);border:0;background:#000}
+</style>
+</head>
+<body>
+<!-- Login gate -->
+<div id="authView" class="center">
+  <div class="card">
+    <div style="text-align:center;margin-bottom:10px">
+      <div style="display:inline-block;border:1px solid var(--accent);color:var(--accent);font-weight:800;border-radius:999px;padding:6px 12px;margin-bottom:8px">Acceso requerido</div>
+      <h1 class="title">Inicia sesión para jugar</h1>
+      <p style="color:var(--muted);margin-top:6px">Esta página también pedirá login si la recargas.</p>
+    </div>
+    <div class="field"><div class="label">Correo</div><input id="email" type="email" placeholder="tu@correo.com"></div>
+    <div class="field"><div class="label">Contraseña</div><input id="pass" type="password" placeholder="••••••••"></div>
+    <button id="btn-login" class="btn" style="width:100%">Iniciar sesión</button>
+    <div style="height:8px"></div>
+    <button id="btn-google" class="btn ghost" style="width:100%">Continuar con Google</button>
+    <div id="status" class="notice">Esperando autenticación…</div>
+  </div>
+</div>
+
+<!-- Player -->
+<div id="playerView" class="hidden">
+  <div class="top">
+    <a href="index.html" class="btn ghost">← Catálogo</a>
+    <h2 id="gameTitle" class="title">Cargando…</h2>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <a class="btn ghost" href="https://www.google.com" target="_blank" rel="noopener noreferrer nofollow">Pánico</a>
+      <a id="logout" href="#" class="btn ghost">Cerrar sesión</a>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="frame-wrap">
+      <iframe id="gameFrame" class="game"
+        title="Juego"
+        allow="gamepad; clipboard-read; clipboard-write"
+        referrerpolicy="no-referrer"
+        sandbox="allow-scripts allow-same-origin allow-pointer-lock">
+      </iframe>
+    </div>
+    <p class="notice">Consejo: gira tu iPad a horizontal para más espacio.</p>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+  import {
+    getAuth, onAuthStateChanged, signOut,
+    signInWithEmailAndPassword,
+    GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult
+  } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+  // Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAdIYosKvktrWeuoyrupSVRLE3ekfv74IU",
+    authDomain: "carletes-games.firebaseapp.com",
+    projectId: "carletes-games",
+    storageBucket: "carletes-games.firebasestorage.app",
+    messagingSenderId: "6199017607",
+    appId: "1:6199017607:web:f1a2409202bdf08e3bf822",
+    measurementId: "G-DS1SXZ8QN2"
+  };
+  const app = initializeApp(firebaseConfig);
+  let analytics; try{ analytics = getAnalytics(app) }catch{}
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider(); provider.setCustomParameters({ prompt:'select_account' });
+
+  // DOM
+  const authView = document.getElementById('authView');
+  const playerView = document.getElementById('playerView');
+  const statusEl = document.getElementById('status');
+  const emailEl = document.getElementById('email');
+  const passEl  = document.getElementById('pass');
+  const btnLogin= document.getElementById('btn-login');
+  const btnGoogle = document.getElementById('btn-google');
+  const logout = document.getElementById('logout');
+  const gameTitle = document.getElementById('gameTitle');
+  const gameFrame = document.getElementById('gameFrame');
+
+  // Catálogo mínimo (id → url) — idéntico a index
+  const GAMES = {
+    'drivemad':'gamefiles/DriveMad/index.html',
+    'monkeymart':'https://carletes2010.github.io/Monkey-Mart/',
+    'subwaysurfers':'gamefiles/Subway-Surfers-Haunted-Hood-main/index.html',
+    'uno':'gamefiles/uno/index.html',
+    'clashroyale':'gamefiles/ClashRoyale/index.html',
+    'blockblast':'gamefiles/blockblast/index.html',
+    'retrobowl':'gamefiles/RetroBowl/index.html',
+    'angrybirds':'gamefiles/angrybirds/fullscreen.html',
+    'youtube':'https://carletes2010.github.io/mahara/',
+    'moneyroller':'gamefiles/money-roller-main/index.html',
+    'pool8':'gamefiles/8-ball-pool-main/index.html',
+    'jetpack':'gamefiles/Jetpack-Joyride-main/index.html',
+    'tinyfishing':'gamefiles/Tiny-Fishing-main/index.html',
+    'ninjafruit':'gamefiles/Ninja-Fruit-main/index.html',
+    'asmallworldcup':'gamefiles/asmallworldcup-main/index.html',
+    'eggycar':'gamefiles/eggycar-main/index.html',
+    'clashoftanks':'gamefiles/ClashOfTanks-gh-pages/index.html',
+    'penalty2':'gamefiles/penalty-shooters-2-main/index.html'
+  };
+
+  function msg(t){ statusEl.textContent = t }
+
+  // Leer id como frame.html?{gamename}
+  function getGameId(){
+    const q = location.search.replace(/^\?/, '');
+    return decodeURIComponent(q || '').trim();
+  }
+
+  function loadGame(){
+    const id = getGameId();
+    if(!id){ gameTitle.textContent = 'ID de juego no especificado'; return }
+    const src = GAMES[id];
+    if(!src){ gameTitle.textContent = `Juego desconocido: ${id}`; return }
+    gameTitle.textContent = `Jugando: ${id}`;
+    gameFrame.src = src;
+    try{ analytics && logEvent(analytics,'select_content',{content_type:'game', item_id:id}) }catch{}
+  }
+
+  // Política: pedir login al recargar la página
+  (async ()=>{
+    const nav = performance.getEntriesByType('navigation')[0];
+    const isReload = nav && nav.type === 'reload';
+    if(isReload){
+      try{ await signOut(auth) }catch{}
+    }
+  })();
+
+  // Auth gate
+  onAuthStateChanged(auth, (user)=>{
+    if(user){
+      authView.classList.add('hidden');
+      playerView.classList.remove('hidden');
+      loadGame();
+    }else{
+      playerView.classList.add('hidden');
+      authView.classList.remove('hidden');
+    }
+  });
+
+  // Redirect result (Google)
+  (async ()=>{
+    try{
+      const res = await getRedirectResult(auth);
+      if(res?.user){
+        msg(`Autenticado como ${res.user.displayName || res.user.email}.`);
+      }
+    }catch(e){ msg(mapAuthError(e)) }
+  })();
+
+  // Actions
+  btnLogin.onclick = async ()=>{
+    const email = (emailEl.value||'').trim();
+    const pass  = (passEl.value||'').trim();
+    if(!email||!pass) return msg('Correo y contraseña son requeridos.');
+    try{
+      await signInWithEmailAndPassword(auth, email, pass);
+      msg('Acceso correcto.');
+    }catch(e){ msg(mapAuthError(e)) }
+  };
+
+  btnGoogle.onclick = async ()=>{
+    try{
+      await signInWithPopup(auth, provider);
+      msg('Autenticado con Google.');
+    }catch(e){
+      const fb = ['auth/popup-blocked','auth/popup-closed-by-user','auth/operation-not-supported-in-this-environment','auth/auth-domain-config-required','auth/unauthorized-domain'];
+      if(fb.includes(e?.code)){
+        msg('Redirigiendo a Google…');
+        await signInWithRedirect(auth, provider);
+      } else msg(mapAuthError(e));
+    }
+  };
+
+  logout.onclick = async (e)=>{
+    e.preventDefault();
+    try{ await signOut(auth) }finally{ location.href='index.html' }
+  };
+
+  function mapAuthError(e){
+    const code = e?.code || '';
+    const dict = {
+      'auth/invalid-email':'Correo inválido.',
+      'auth/missing-password':'Falta la contraseña.',
+      'auth/invalid-credential':'Credenciales inválidas.',
+      'auth/user-not-found':'Usuario no encontrado.',
+      'auth/wrong-password':'Contraseña incorrecta.',
+      'auth/email-already-in-use':'Ese correo ya está registrado.',
+      'auth/weak-password':'Contraseña demasiado débil.',
+      'auth/network-request-failed':'Fallo de red. Intenta de nuevo.',
+    };
+    return dict[code] || ('Error: '+(e?.message||code));
+  }
+</script>
+</body>
+</html>

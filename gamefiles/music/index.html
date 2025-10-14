@@ -224,16 +224,11 @@ opacity:.14;filter:blur(42px);animation:float 18s ease-in-out infinite alternate
 
 <script>
 /* ===================== CONFIG ===================== */
-/* Cambia esto si sirves por file:/// o por http:// */
-const BASE_URL = ''; 
-// Ejemplos:
-// const BASE_URL = 'file:///C:/Users/charl/Downloads';  // si abres el HTML como file:// y los MP3 están ahí
-// const BASE_URL = ''; // si sirves por http://localhost y /CarletesMusic está en el root público
+const BASE_URL = ''; // Sirviendo desde /gamefiles/music/CarletesMusic/ en tu web, deja vacío
 
 /* ===================== FALLBACK RESOLVER ===================== */
 function joinUrl(base, path){
-  if(!base) return path; 
-  // si path empieza con '/', quítalo para concatenar con base file://
+  if(!base) return path;
   const p = path.startsWith('/') ? path.slice(1) : path;
   return base.replace(/\/+$/,'') + '/' + p;
 }
@@ -249,7 +244,6 @@ function tidySpaces(str){
   return str.replace(/\s+/g,' ').replace(/\s*-\s*/g,' - ').trim();
 }
 function sanitizeFilename(name){
-  // varias alternativas: original, sin acentos, sin acentos + sin comas, espacios normales
   const variants = new Set();
   variants.add(name);
   variants.add(tidySpaces(name));
@@ -265,13 +259,11 @@ function buildCandidates(baseFolder, filename){
   const paths = [];
   for(const f of files){
     const full = baseFolder.replace(/\/+$/,'') + '/' + f;
-    // candidatos: encoded y también por si el servidor acepta raw
     paths.push( joinUrl(BASE_URL, encodePath(full)) );
     paths.push( joinUrl(BASE_URL, full) );
   }
   return Array.from(new Set(paths));
 }
-// asigna src con fallback en <audio> o <img>
 function tryLoadMedia(el, candidates){
   let i = 0;
   const next = ()=>{ if(i < candidates.length){ el.src = candidates[i++]; } };
@@ -279,16 +271,18 @@ function tryLoadMedia(el, candidates){
   next();
 }
 
-/* ===================== DATASETS ===================== */
+/* ===================== DATASETS (rutas nuevas) ===================== */
 const $ = (s,ctx=document)=>ctx.querySelector(s);
 const $$ = (s,ctx=document)=>Array.from(ctx.querySelectorAll(s));
+
+const ROOT = '/gamefiles/music/CarletesMusic';
 
 const ALBUMS = [
   /* YHLQMDLG */
   {
     id:'yhlq', title:'YHLQMDLG', artist:'Bad Bunny', year:2020,
-    coverCandidates: buildCandidates('/CarletesMusic/YHLQMDLG','cover.jpg'),
-    base:'/CarletesMusic/YHLQMDLG',
+    coverCandidates: buildCandidates(`${ROOT}/YHLQMDLG`,'cover.jpg'),
+    base:`${ROOT}/YHLQMDLG`,
     tracks:[
       "01-Si Veo A Tu Mamá.mp3","02-La Difícil.mp3","03-Pero Ya No.mp3",
       "04-La Santa (Ft. Daddy Yankee).mp3","05-Yo Perreo Sola.mp3",
@@ -306,8 +300,8 @@ const ALBUMS = [
   /* Un Verano Sin Ti */
   {
     id:'uvst', title:'Un Verano Sin Ti', artist:'Bad Bunny', year:2022,
-    coverCandidates: buildCandidates('/CarletesMusic/Un Verano Sin Ti','cover.jpg'),
-    base:'/CarletesMusic/Un Verano Sin Ti',
+    coverCandidates: buildCandidates(`${ROOT}/Un Verano Sin Ti`,'cover.jpg'),
+    base:`${ROOT}/Un Verano Sin Ti`,
     tracks:[
       "01-Moscow Mule.mp3","02-Después De La Playa.mp3","03-Me Porto Bonito (Ft. Chencho Corleone).mp3","04-Tití Me Preguntó.mp3",
       "05-Un Ratito.mp3","06-Yo No Soy Celoso.mp3","07-Tarot (Ft. Jhay Cortez).mp3","08-Neverita.mp3","09-La Corriente (Ft. Tony Dize).mp3",
@@ -320,8 +314,8 @@ const ALBUMS = [
   /* Emmanuel */
   {
     id:'emma', title:'Emmanuel', artist:'Anuel AA', year:2020,
-    coverCandidates: buildCandidates('/CarletesMusic/Emmanuel','cover.jpg'),
-    base:'/CarletesMusic/Emmanuel',
+    coverCandidates: buildCandidates(`${ROOT}/Emmanuel`,'cover.jpg'),
+    base:`${ROOT}/Emmanuel`,
     tracks:[
       "01-No Llores Mujer (Ft. Travis Barker).mp3","02-Somos O No Somos.mp3","03-Reggaetonera.mp3","04-Jangueo (Ft. Tego Calderón).mp3",
       "05-Hasta Que Dios Diga (Ft. Bad Bunny).mp3","06-Narcos.mp3","07-Fútbol Y Rumba (Ft. Enrique Iglesias).mp3","08-Que Se Joda (Ft. Farruko & Zion).mp3",
@@ -332,24 +326,24 @@ const ALBUMS = [
     ]
   },
 
-  /* DeBÍ TiRAR MáS FOToS (Bad Bunny) — usa carpeta “CarletesMusic/CarletesMusic/DeBÍ…” como diste */
- {
-  id:'dtmf', title:'DeBÍ TiRAR MáS FOToS', artist:'Bad Bunny', year:2024,
-  coverCandidates: buildCandidates('/CarletesMusic/DeBÍ TiRAR MáS FOToS','cover.png'),
-  base:'/CarletesMusic/DeBÍ TiRAR MáS FOToS',
-  tracks:[
-    "01 - NUEVAYoL.mp3","02 - VOY A LLeVARTE PA PR.mp3","03 - BAILE INoLVIDABLE.mp3","04 - PERFuMITO NUEVO.mp3",
-    "05 - WELTiTA.mp3","06 - VeLDÁ.mp3","07 - EL CLúB.mp3","08 - KETU TeCRÉ.mp3","09 - BOKeTE.mp3","10 - KLOuFRENS.mp3",
-    "11 - TURiSTA.mp3","12 - CAFé CON RON.mp3","13 - PIToRRO DE COCO.mp3","14 - LO QUE LE PASÓ A HAWAii.mp3",
-    "15 - EoO.mp3","16 - DtMF.mp3","17 - LA MuDANZA.mp3","18 Bonus track 2.mp3","19 - Bonus Track.mp3"
-  ]
-},
+  /* DeBÍ TiRAR MáS FOToS (Bad Bunny) */
+  {
+    id:'dtmf', title:'DeBÍ TiRAR MáS FOToS', artist:'Bad Bunny', year:2024,
+    coverCandidates: buildCandidates(`${ROOT}/DeBÍ TiRAR MáS FOToS`,'cover.png'),
+    base:`${ROOT}/DeBÍ TiRAR MáS FOToS`,
+    tracks:[
+      "01 - NUEVAYoL.mp3","02 - VOY A LLeVARTE PA PR.mp3","03 - BAILE INoLVIDABLE.mp3","04 - PERFuMITO NUEVO.mp3",
+      "05 - WELTiTA.mp3","06 - VeLDÁ.mp3","07 - EL CLúB.mp3","08 - KETU TeCRÉ.mp3","09 - BOKeTE.mp3","10 - KLOuFRENS.mp3",
+      "11 - TURiSTA.mp3","12 - CAFé CON RON.mp3","13 - PIToRRO DE COCO.mp3","14 - LO QUE LE PASÓ A HAWAii.mp3",
+      "15 - EoO.mp3","16 - DtMF.mp3","17 - LA MuDANZA.mp3","18 Bonus track 2.mp3","19 - Bonus Track.mp3"
+    ]
+  },
 
-  /* Feliz cumpleaños Ferxxo te pirateamos el álbum (Feid) — tracklist EXACTO como lo pasaste */
+  /* Feliz cumpleaños Ferxxo te pirateamos el álbum (Feid) */
   {
     id:'ferx', title:'Feliz cumpleaños Ferxxo te pirateamos el álbum', artist:'Feid', year:2022,
-    coverCandidates: buildCandidates('/CarletesMusic/feliz-cumpleanos-ferxxo-te-pirateamos-el-album','cover.jpg'),
-    base:'/CarletesMusic/feliz-cumpleanos-ferxxo-te-pirateamos-el-album',
+    coverCandidates: buildCandidates(`${ROOT}/feliz-cumpleanos-ferxxo-te-pirateamos-el-album`,'cover.jpg'),
+    base:`${ROOT}/feliz-cumpleanos-ferxxo-te-pirateamos-el-album`,
     tracks:[
       "Intro.mp3","Ferxxo 100.mp3","Feliz Cumpleaños Ferxxo.mp3","Normal.mp3","Prohibidox.mp3","La Buena Fai.mp3",
       "Lady Mi Amor.mp3","Nieve.mp3","X20X.mp3","XQ Te Pones Así.mp3","Si Te La Encuentras Por Ahí.mp3",
@@ -463,7 +457,6 @@ document.getElementById('clear').onclick=()=>{ document.getElementById('search')
 function setNow(t){ nowTitle.textContent=t.title; nowArtist.textContent=`${t.artist} — ${t.album}`; tryLoadMedia(nowCover, t.coverCandidates); }
 function load(i){
   index=i; const t=queue[index]; if(!t) return;
-  // set audio with fallbacks
   audio.src=''; audio.removeAttribute('src');
   tryLoadMedia(audio, t.audioCandidates);
   setNow(t);

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CARLETESMOVIES</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+:root {--bg:#0a0a0a;--fg:#f9fafb;--muted:#9ca3af;--card:#111;--stroke:#222;--accent:#3b82f6;--accent-2:#2563eb;--radius:16px;--shadow:0 8px 24px rgba(0,0,0,.45)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+.btn{padding:12px 18px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:12px;font-weight:800;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.ghost:hover{background:var(--accent);color:#fff}
+.topbar{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke)}
+.topbar-inner{max-width:1100px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.profile{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.profile img{width:28px;height:28px;border-radius:999px;border:1px solid var(--stroke)}
+.hero-catalog{margin:20px 0 26px;padding:60px 20px;background:var(--card);border:1px solid var(--stroke);border-radius:20px;box-shadow:var(--shadow);text-align:center}
+.badge{display:inline-block;border:1px solid var(--accent);color:var(--accent);font-weight:800;border-radius:999px;padding:6px 12px;margin-bottom:8px}
+.title-xl{font-size:clamp(28px,6vw,44px);font-weight:900;margin:0 0 10px}
+.subtitle{max-width:740px;margin:0 auto 18px;color:var(--muted)}
+.top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}
+.search{flex:1;display:flex;gap:8px;min-width:280px}
+.search input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--stroke);background:transparent;color:var(--fg);outline:none}
+.tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;border:1px solid var(--stroke);border-radius:12px;padding:8px;margin-top:10px}
+.tab{padding:10px 12px;text-align:center;border:1px solid transparent;border-radius:10px;color:var(--muted);font-weight:800;cursor:pointer}
+.tab.active{color:var(--fg);border-color:var(--stroke);background:#ffffff08}
+.section{margin:24px 0}
+.section-title{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:18px;font-weight:900}
+.section-title::after{content:"";flex:1;height:1px;background:var(--stroke);opacity:.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.card-game{display:block;background:var(--card);border:1px solid var(--stroke);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:.15s transform;cursor:pointer}
+.card-game:hover{transform:translateY(-2px)}
+.thumb{width:100%;aspect-ratio:2/3;object-fit:cover;background:#000}
+.meta{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+footer{margin:30px 0;text-align:center;color:var(--muted);font-size:14px}
+/* Bloqueo visual cuando no hay sesión */
+.lock{position:fixed;inset:0;background:linear-gradient(180deg,#0a0a0acc,#0a0a0eff);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:50}
+.lock.show{display:flex}
+.lock-card{background:var(--card);border:1px solid var(--stroke);border-radius:16px;box-shadow:var(--shadow);padding:26px 22px;max-width:520px;text-align:center}
+.lock-card h3{margin:0 0 8px;font-size:22px}
+.lock-card p{margin:0 0 14px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo" style="font-weight:900;letter-spacing:.5px">CARLETES<span style="color:var(--accent)">MOVIES</span></div>
+      <div class="profile" id="authBox">
+        <span>USER</span>
+        <button class="btn ghost" id="loginBtn">Iniciar sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero-catalog">
+      <p class="badge">Carletes Movies V1</p>
+      <h1 class="title-xl">WELCOME TO CARLETES MOVIES</h1>
+      <p class="subtitle">CarletesMovies: free movies and TV — no subscriptions. Wide catalog, instant access on any device, and easy playback. Press play and enjoy.</p>
+      <div class="top-actions">
+        <div class="search">
+          <input id="q" type="search" placeholder="Browse in Carletes Movies…">
+          <button class="btn ghost" id="clearBtn">Limpiar</button>
+        </div>
+        <button class="btn" id="randomBtn">Sorpresa</button>
+      </div>
+      <div id="tabs" class="tabs"></div>
+    </section>
+
+    <div id="content"></div>
+
+    <footer>© <span id="year"></span> CARLETESMOVIES </footer>
+  </div>
+
+  <!-- Capa de bloqueo si no hay sesión -->
+  <div class="lock" id="lock">
+    <div class="lock-card">
+      <h3>Inicia sesión para continuar</h3>
+      <p>Por seguridad, debes iniciar sesión de Google cada vez que entres o recargues la página.</p>
+      <button class="btn" id="unlockBtn">Iniciar sesión con Google</button>
+    </div>
+  </div>
+
+  <!-- App + Firebase Auth (modular) -->
+  <script type="module">
+/* ===================== Firebase ===================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
+import { getAuth, GoogleAuthProvider, setPersistence, inMemoryPersistence, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAdIYosKvktrWeuoyrupSVRLE3ekfv74IU",
+  authDomain: "carletes-games.firebaseapp.com",
+  projectId: "carletes-games",
+  storageBucket: "carletes-games.firebasestorage.app",
+  messagingSenderId: "6199017607",
+  appId: "1:6199017607:web:f1a2409202bdf08e3bf822",
+  measurementId: "G-DS1SXZ8QN2"
+};
+
+const app = initializeApp(firebaseConfig);
+let analytics; try{ analytics = getAnalytics(app) }catch{}
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt:'select_account' });
+
+// ✅ Clave: NO persistir sesión entre recargas
+await setPersistence(auth, inMemoryPersistence);
+
+/* UI - referencias rápidas */
+const $ = (s, ctx=document) => ctx.querySelector(s);
+const content = $('#content'), q = $('#q'), yearEl = $('#year'), tabsEl = $('#tabs');
+const authBox = $('#authBox');
+const loginBtn = $('#loginBtn');
+const unlockBtn = $('#unlockBtn');
+const lock = $('#lock');
+yearEl.textContent = new Date().getFullYear();
+
+/* =================== Catálogo y utilidades =================== */
+const PLACEHOLDER = (t) => `https://placehold.co/600x900/png?text=${encodeURIComponent(t)}`;
+const CACHE_KEY = 'carletes_wiki_posters_v2';
+function loadCache(){ try{return JSON.parse(localStorage.getItem(CACHE_KEY)||'{}')}catch{return{}} }
+function saveCache(obj){ localStorage.setItem(CACHE_KEY, JSON.stringify(obj||{})) }
+
+const GENRE_ORDER = ["Superheroes","Animation / Family","Horror","Comedy","Fantasy / Adventure","Action / Thriller","Sports / Drama","Series"];
+
+const movies = [
+  { title:"Five Nights at Freddy's", year:2023, genre:"Horror", url:"https://drive.google.com/file/d/1tyzXrXFux15AXpZxtiM61p1R1zO6NbSF/view", wiki:"Five_Nights_at_Freddy's_(film)" },
+  { title:"Scream", year:1996, genre:"Horror", url:"https://drive.google.com/file/d/14UKIE2jtMo0qFPbomlXVKsKA5l81W4OE/view", wiki:"Scream_(1996_film)" },
+  { title:"Scream 2", year:1997, genre:"Horror", url:"https://drive.google.com/file/d/1XXmiwcrUSMi5rn90xr5hnBK6La8hBkhz/view", wiki:"Scream_2" },
+  { title:"Scream 3", year:2000, genre:"Horror", url:"https://drive.google.com/file/d/1O1mkNEfq98w2Zrxyg6XLCfJI_bmfwWp_/view", wiki:"Scream_3" },
+  { title:"Scream 4", year:2011, genre:"Horror", url:"https://drive.google.com/file/d/1t4kNJPFCytvx2ktdw5n6xBOtRNnBm5RJ/view?usp=share_link", wiki:"Scream_4" },
+  { title:"Scream (2022)", year:2022, genre:"Horror", url:"https://drive.google.com/file/d/152-KeFdBMBscGESWVWLuDS-YUf8VsRCd/view?usp=share_link", wiki:"Scream_(2022_film)" },
+  { title:"Terrifier", year:2016, genre:"Horror", url:"https://drive.google.com/file/d/18N4_ou-sji02HD3dOFNP0aDqCBleLr7G/view", wiki:"Terrifier" },
+  { title:"Terrifier 3", year:2024, genre:"Horror", url:"https://drive.google.com/file/d/1C0yGUsqW5IT81q8PAebnlw0Ha6oHWYV4/view", wiki:"Terrifier_3" },
+  { title:"It", year:2017, genre:"Horror", url:"https://drive.google.com/file/d/1T5xeDfwFXqP0WJMExe3nwnwHgUozfXK2/view", wiki:"It_(2017_film)" },
+  { title:"Child's Play", year:1988, genre:"Horror", url:"https://drive.google.com/file/d/1FPO2K8Oqb1O3qm1qb57NhZHhaGCvQjAz/view", wiki:"Child's_Play_(1988_film)" },
+  { title:"Child's Play 2", year:1990, genre:"Horror", url:"https://drive.google.com/file/d/1NXrR22Ja1iaa3PcidheWe6dKmK80A2em/view", wiki:"Child's_Play_2" },
+  { title:"Child's Play 3", year:1991, genre:"Horror", url:"https://drive.google.com/file/d/1gEP2FcL30yLVaUw_J9As7JJum_rJPZlDt/view", wiki:"Child's_Play_3" },
+  { title:"Friday the 13th", year:1980, genre:"Horror", url:"https://drive.google.com/file/d/1Tu0WxRUC-gADzYFEnSvudZ3MZ7Y735jH/view", wiki:"Friday_the_13th_(1980_film)" },
+  { title:"Deadpool & Wolverine", year:2024, genre:"Superheroes", url:"https://drive.google.com/file/d/1B_eiKUt7N5OxyUN9c37LG0pxcErP4yJ6/view", wiki:"Deadpool_%26_Wolverine" },
+  { title:"Black Panther", year:2018, genre:"Superheroes", url:"https://drive.google.com/file/u/0/d/1wdUOiz7tI3R5vTz779h7CesAW5h0kUh1/view", wiki:"Black_Panther_(film)" },
+  { title:"Spider-Man: Homecoming", year:2017, genre:"Superheroes", url:"https://drive.google.com/file/d/1jGHx1i3EqHKmQmE42APmxUk4bYHrINQ_/view", wiki:"Spider-Man:_Homecoming" },
+  { title:"Spider-Man: Far From Home", year:2019, genre:"Superheroes", url:"https://drive.google.com/file/u/0/d/1vPNUTkubVVmguVfwstRQm5xgbkRRii6z/view", wiki:"Spider-Man:_Far_From_Home" },
+  { title:"The Amazing Spider-Man", year:2012, genre:"Superheroes", url:"https://drive.google.com/file/d/1Xf8xZcY3kneGFln8NPsQMt7CLtmGhEeD/view", wiki:"The_Amazing_Spider-Man_(2012_film)" },
+  { title:"Spider-Man: Into the Spider-Verse", year:2018, genre:"Superheroes", url:"https://drive.google.com/file/d/1V3Bq0lrDQUxJay5DDs3gK69ZvRNb1j2u/view", wiki:"Spider-Man:_Into_the_Spider-Verse" },
+  { title:"Spider-Man: Across the Spider-Verse", year:2023, genre:"Superheroes", url:"https://drive.google.com/file/d/1Sd1l_LhKRp_2OE5gRJJyPubnZjJccLgQ/view", wiki:"Spider-Man:_Across_the_Spider-Verse" },
+  { title:"Spider-Man: No Way Home", year:2021, genre:"Superheroes", url:"https://drive.google.com/file/d/1mUF4PcT0_ZKofV0KHHdjxgTQdhF2BliQ/view", wiki:"Spider-Man:_No_Way_Home" },
+  { title:"Venom", year:2018, genre:"Superheroes", url:"https://drive.google.com/file/d/1iRN197XeJCQnZGza599ZTXsayEG1mdRB/view", wiki:"Venom_(2018_film)" },
+  { title:"Venom: Let There Be Carnage", year:2021, genre:"Superheroes", url:"https://drive.google.com/file/d/1N6kL0SF4qR6wFpwfGIZUZjFnz3lQDGGz/view", wiki:"Venom:_Let_There_Be_Carnage" },
+  { title:"Avengers: Endgame", year:2019, genre:"Superheroes", url:"https://drive.google.com/file/d/1ehi9tidOYHb1RMldxtBw6-L3UhyEKVm9/view?t=2911", wiki:"Avengers:_Endgame" },
+  { title:"Captain America: Civil War", year:2016, genre:"Superheroes", url:"https://drive.google.com/file/d/1zcOWY_OTVctnY1sHg1KRjhDVls_3ebWs/view", wiki:"Captain_America:_Civil_War" },
+  { title:"The Flash", year:2023, genre:"Superheroes", url:"https://drive.google.com/file/d/1ApUHMkZM-j3vM-rSG-kvjk3KuvJNAsXp/view", wiki:"The_Flash_(film)" },
+  { title:"Batman Begins", year:2005, genre:"Superheroes", url:"https://drive.google.com/file/u/0/d/1ZegfkrD50sGDUVJ-4d9IiBpR0MTmdphx/view", wiki:"Batman_Begins" },
+  { title:"The Dark Knight", year:2008, genre:"Superheroes", url:"https://drive.google.com/file/d/1CZvw1MgSLVQR9Z9L8qpl8j1oI7DnMDWr/view", wiki:"The_Dark_Knight" },
+  { title:"The Dark Knight Rises", year:2012, genre:"Superheroes", url:"https://drive.google.com/file/d/1ssHaJjHmu-V5fTC4_AoyABD_KYB1dkNX/view", wiki:"The_Dark_Knight_Rises" },
+  { title:"Shrek", year:2001, genre:"Animation / Family", url:"https://drive.google.com/file/d/1ps_r1YV8y5h93_mUu4OFlPVVkPzT0Rui/view", wiki:"Shrek" },
+  { title:"Shrek 2", year:2004, genre:"Animation / Family", url:"https://drive.google.com/file/d/1NoWXqvxNnXPiBj0kLY1lINF00Gg17mme/view", wiki:"Shrek_2" },
+  { title:"Shrek the Third", year:2007, genre:"Animation / Family", url:"https://drive.google.com/file/d/1qhxQw4uC6aO1KN0UZrybu1YY1vdtBwmM/view", wiki:"Shrek_the_Third" },
+  { title:"Madagascar", year:2005, genre:"Animation / Family", url:"https://drive.google.com/file/d/1TvrE3-T2tdfFhmEdhG_-NJlGNMnhHt2J/view", wiki:"Madagascar_(2005_film)" },
+  { title:"Madagascar: Escape 2 Africa", year:2008, genre:"Animation / Family", url:"https://drive.google.com/file/d/1uNRfbrFF8al6BtxKkXWhuq-DeMVd9NZn/view", wiki:"Madagascar:_Escape_2_Africa" },
+  { title:"Madagascar 3: Europe's Most Wanted", year:2012, genre:"Animation / Family", url:"https://drive.google.com/file/d/1W4aM_WbjjxTlE_f5zcKPYZ5pNOym_W8K/view", wiki:"Madagascar_3:_Europe's_Most_Wanted" },
+  { title:"Megamind", year:2010, genre:"Animation / Family", url:"https://drive.google.com/file/u/0/d/1Xg-DLA7N4hHN38uQ4IxReyxMeC10pAJT/view", wiki:"Megamind" },
+  { title:"Coraline", year:2009, genre:"Animation / Family", url:"https://drive.google.com/file/u/0/d/1TFiL16cNmQmG5pSi-s6od4xgymFqK1kJ/view", wiki:"Coraline_(film)" },
+  { title:"Ratatouille", year:2007, genre:"Animation / Family", url:"https://drive.google.com/file/d/1kjVDdXtZ3-O0SndMHeIwMXe4jNZJ4w2C/view", wiki:"Ratatouille_(film)" },
+  { title:"The Smurfs 2", year:2013, genre:"Animation / Family", url:"https://drive.google.com/file/d/1FYgtU8rAKF32RjDRgYqODXzOHV0mQuBy/view", wiki:"The_Smurfs_2" },
+  { title:"Coco", year:2017, genre:"Animation / Family", url:"https://drive.google.com/file/d/194M4dGCwh1hTxVM1-_axnLSdt4trnbK2/view", wiki:"Coco_(2017_film)" },
+  { title:"Captain Underpants: The First Epic Movie", year:2017, genre:"Animation / Family", url:"https://drive.google.com/file/d/1BW7yv_y4uk99Nsjbc--z1beQ_bYYmUXk/view", wiki:"Captain_Underpants:_The_First_Epic_Movie" },
+  { title:"The Incredibles", year:2004, genre:"Animation / Family", url:"https://drive.google.com/file/d/1XZrELbZbBqHShrCiPr4I4_pmOeT_gvwY/view", wiki:"The_Incredibles" },
+  { title:"Incredibles 2", year:2018, genre:"Animation / Family", url:"https://drive.google.com/file/d/1XZ0pSe4bccOpJeF_VkXhkOhxQ3Tzp8RB/view", wiki:"Incredibles_2" },
+  { title:"Minions: The Rise of Gru", year:2022, genre:"Animation / Family", url:"https://drive.google.com/file/d/1lrJNkBON3H_5n8lF3WKCaUT6AUl9qbh4/view", wiki:"Minions:_The_Rise_of_Gru" },
+  { title:"Rio", year:2011, genre:"Animation / Family", url:"https://drive.google.com/file/d/1DIHKkPm7JVwOWWgM5RvYgOhAbFXWOAhf/view", wiki:"Rio_(2011_film)" },
+  { title:"Rio 2", year:2014, genre:"Animation / Family", url:"https://drive.google.com/file/d/12oiUUNl2_I7l1GsXLD74FA0wJlrRX7v_/view", wiki:"Rio_2" },
+  { title:"Inside Out", year:2015, genre:"Animation / Family", url:"https://drive.google.com/file/d/1BEPGPg_iR7L5QFJ91SizjlA6khwj6j1e/view", wiki:"Inside_Out_(2015_film)" },
+  { title:"Inside Out 2", year:2024, genre:"Animation / Family", url:"https://drive.google.com/file/d/148ae2JtLzIZwy-AKjtRgLZPNf3vEmQOE/view", wiki:"Inside_Out_2" },
+  { title:"Alvin and the Chipmunks", year:2007, genre:"Animation / Family", url:"https://drive.google.com/file/d/1uCRRJZj1GAaweX996uHbF2zxPoessmGW/view", wiki:"Alvin_and_the_Chipmunks_(film)" },
+  { title:"Despicable Me", year:2010, genre:"Animation / Family", url:"https://drive.google.com/file/d/1upRWBqPKcQjviBjAgYkzkWZuVjQ1SAWF/view", wiki:"Despicable_Me" },
+  { title:"Scary Movie", year:2000, genre:"Comedy", url:"https://drive.google.com/file/d/1-61Fls8_MDTVq3r5dHP58joVRiUloxZQ/view", wiki:"Scary_Movie" },
+  { title:"Scary Movie 2", year:2001, genre:"Comedy", url:"https://drive.google.com/file/d/1Jmeyjhlpg6A-W-XJPoqC8uhtWztuQe-F/view", wiki:"Scary_Movie_2" },
+  { title:"Scary Movie 3", year:2003, genre:"Comedy", url:"https://drive.google.com/file/d/1KN1dzjj-d6MhY47MIgWdT2Au10Ft7Bf1/view", wiki:"Scary_Movie_3" },
+  { title:"Scary Movie 4", year:2006, genre:"Comedy", url:"https://drive.google.com/file/d/1pgH5VfJEi5NRVEtp2y_vZMSOk_rh3Har/view", wiki:"Scary_Movie_4" },
+  { title:"Pixels", year:2015, genre:"Comedy", url:"https://drive.google.com/file/d/1Wpvc4eawdHc3DjkVVop959tYmJL6m3J2/view", wiki:"Pixels_(2015_film)" },
+  { title:"Mean Girls", year:2004, genre:"Comedy", url:"https://drive.google.com/file/d/1Hab49OuPK37MngOtQolLsVIzJ4AK9cNA/view", wiki:"Mean_Girls" },
+  { title:"Harry Potter and the Philosopher's Stone", year:2001, genre:"Fantasy / Adventure", url:"https://drive.google.com/file/d/1bJMKhvzwuVfAYECLheyA_h38T9oYvkgX/view", wiki:"Harry_Potter_and_the_Philosopher's_Stone_(film)" },
+  { title:"Ghostbusters", year:1984, genre:"Fantasy / Adventure", url:"https://drive.google.com/file/d/1Kur_TXv1AOx8hhs0qGc_IwZXKmWvD6Y7/view", wiki:"Ghostbusters_(1984_film)" },
+  { title:"Beetlejuice", year:1988, genre:"Fantasy / Adventure", url:"https://drive.google.com/file/d/1OsCtW4NUV94utDNxmFejUFoH6euf8Ind/view", wiki:"Beetlejuice" },
+  { title:"John Wick", year:2014, genre:"Action / Thriller", url:"https://drive.google.com/file/d/1o-u405CtHzkRFAjDRxnlwIV1MKzmpQYa/view", wiki:"John_Wick" },
+  { title:"Rambo III", year:1988, genre:"Action / Thriller", url:"https://drive.google.com/file/d/1KDIkm6VSTb_QrvSb8Gvbus8z-L3BGySI/view", wiki:"Rambo_III" },
+  { title:"Creed", year:2015, genre:"Sports / Drama", url:"https://drive.google.com/file/d/1w9nVBGOKDax-xCr-caqekW4hcjRUQWZA/view", wiki:"Creed_(film)" },
+  { title:"Creed II", year:2018, genre:"Sports / Drama", url:"https://drive.google.com/file/d/1KnW-KW6LV-fH0S0R_2sbsEKkKhSFK-OP/view", wiki:"Creed_II" },
+  { title:"The Karate Kid", year:1984, genre:"Sports / Drama", url:"https://drive.google.com/file/d/1tMJAooF8bG9ghav9CU4GPYF3t07ySMXL/view", wiki:"The_Karate_Kid" },
+  { title:"The Cleveland Show (folder)", year:2009, genre:"Series", url:"https://drive.google.com/drive/folders/12Hm67Xk3fNqRQ59pmZEBu1cq3PsC2KJH", wiki:"The_Cleveland_Show" },
+  { title:"SpongeBob SquarePants (folder)", year:1999, genre:"Series", url:"https://drive.google.com/drive/folders/1QpqcZWVMlzIru0g8xf5olhMeY75YKJkk", wiki:"SpongeBob_SquarePants" },
+  { title:"The Simpsons (folder)", year:1989, genre:"Series", url:"https://drive.google.com/drive/folders/1tXo2krTMvXr-ATSqthy55PUpRRIu1HRr", wiki:"The_Simpsons" }
+];
+
+const GENRES = ["All", ...GENRE_ORDER.filter(g => movies.some(m => m.genre === g))];
+let activeGenre = "All";
+function drawTabs(){
+  tabsEl.innerHTML = '';
+  GENRES.forEach(g => {
+    const b = document.createElement('div');
+    b.className = 'tab' + (g===activeGenre ? ' active' : '');
+    b.textContent = g;
+    b.addEventListener('click', () => { activeGenre = g; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); b.classList.add('active'); render(); });
+    tabsEl.appendChild(b);
+  });
+}
+
+async function fetchWikiPoster(wikiTitle){
+  try{
+    const sUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`;
+    const sRes = await fetch(sUrl, { headers:{'Accept':'application/json'} });
+    if (sRes.ok){
+      const data = await sRes.json();
+      const t = data?.thumbnail?.source;
+      if (t) return t;
+    }
+  }catch{}
+  try{
+    const mUrl = `https://en.wikipedia.org/api/rest_v1/page/media-list/${encodeURIComponent(wikiTitle)}`;
+    const mRes = await fetch(mUrl, { headers:{'Accept':'application/json'} });
+    if (mRes.ok){
+      const media = await mRes.json();
+      const items = Array.isArray(media?.items) ? media.items : [];
+      let best = null, bestScore = 0;
+      for (const it of items){
+        if (it?.type !== 'image') continue;
+        const candidates = (it?.srcset || []).concat([{src: it?.src || it?.original?.source, descriptor:'9999w'}]).filter(x=>x && x.src);
+        for (const c of candidates){
+          const wMatch = /(\d+)w/.exec(c?.descriptor || '') || \/(\d+)px-/.exec(c?.src || '');
+          const w = wMatch ? parseInt(wMatch[1],10) : 0;
+          const score = (it?.rel?.includes('lead') ? 100000 : 0) + w;
+          if (score > bestScore){ bestScore = score; best = c.src; }
+        }
+      }
+      if (best) return best;
+    }
+  }catch{}
+  return null;
+}
+
+function card(item, posterUrl){
+  const a = document.createElement('a');
+  a.className = 'card-game';
+  a.href = item.url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.innerHTML = `
+    <img class="thumb" alt="${item.title}" src="${posterUrl || PLACEHOLDER(item.title)}">
+    <div class="meta">
+      <div>
+        <div style="font-weight:900">${item.title}</div>
+        <div style="font-size:12px;color:var(--muted)">${item.year ?? ""}</div>
+      </div>
+      <div class="btn" style="pointer-events:none">Open</div>
+    </div>
+  `;
+  return a;
+}
+
+function section(title){
+  const s = document.createElement('section');
+  s.className = 'section';
+  s.innerHTML = `<h2 class="section-title">${title}</h2><div class="grid"></div>`;
+  return s;
+}
+
+async function render(){
+  const term = q.value.trim().toLowerCase();
+  const cache = loadCache();
+  content.innerHTML = '';
+  const pool = movies.filter(m => m.title.toLowerCase().includes(term) && (activeGenre==="All" || m.genre===activeGenre));
+
+  if (activeGenre === "All") {
+    for (const g of GENRE_ORDER) {
+      const group = pool.filter(m => m.genre === g);
+      if (!group.length) continue;
+      const sec = section(g);
+      content.appendChild(sec);
+      const grid = sec.querySelector('.grid');
+      for (const m of group) {
+        let poster = cache[m.wiki];
+        const c = card(m, poster);
+        grid.appendChild(c);
+        if (!poster) {
+          try {
+            poster = await fetchWikiPoster(m.wiki);
+            if (poster) { cache[m.wiki] = poster; saveCache(cache); const img = c.querySelector('img.thumb'); if (img) img.src = poster; }
+          } catch {}
+        }
+      }
+    }
+  } else {
+    const sec = section(activeGenre);
+    content.appendChild(sec);
+    const grid = sec.querySelector('.grid');
+    for (const m of pool) {
+      let poster = cache[m.wiki];
+      const c = card(m, poster);
+      grid.appendChild(c);
+      if (!poster) {
+        try {
+          poster = await fetchWikiPoster(m.wiki);
+          if (poster) { cache[m.wiki] = poster; saveCache(cache); const img = c.querySelector('img.thumb'); if (img) img.src = poster; }
+        } catch {}
+      }
+    }
+  }
+}
+
+q.addEventListener('input', render);
+$('#clearBtn').addEventListener('click', () => { q.value=''; render(); });
+$('#randomBtn').addEventListener('click', () => {
+  const term = q.value.trim().toLowerCase();
+  const pool = movies.filter(m => m.title.toLowerCase().includes(term) && (activeGenre==="All" || m.genre===activeGenre));
+  if (!pool.length) return;
+  const pick = pool[Math.floor(Math.random()*pool.length)];
+  // Requiere sesión
+  if (!auth.currentUser) {
+    showLock();
+  } else {
+    window.open(pick.url, '_blank', 'noopener,noreferrer');
+  }
+});
+
+(function init(){ drawTabs(); render(); })();
+
+/* =================== Autenticación y bloqueo =================== */
+function showLock(){ lock.classList.add('show'); }
+function hideLock(){ lock.classList.remove('show'); }
+
+async function login(){
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    console.error('Login error', e);
+  }
+}
+
+async function logout(){
+  try { await signOut(auth); } catch(e){ console.error('Signout error', e); }
+}
+
+loginBtn?.addEventListener('click', login);
+unlockBtn?.addEventListener('click', login);
+
+// Bloquea la apertura de tarjetas si no hay sesión
+content.addEventListener('click', (e)=>{
+  const a = e.target.closest('a.card-game');
+  if (!a) return;
+  if (!auth.currentUser) {
+    e.preventDefault();
+    showLock();
+  }
+});
+
+// Cambios de estado
+onAuthStateChanged(auth, (user)=>{
+  if (user) {
+    hideLock();
+    authBox.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = user.photoURL || 'https://placehold.co/56x56/png';
+    const name = document.createElement('span');
+    name.textContent = user.displayName || user.email || 'Usuario';
+    const out = document.createElement('button');
+    out.className = 'btn ghost';
+    out.textContent = 'Cerrar sesión';
+    out.addEventListener('click', logout);
+    authBox.appendChild(img);
+    authBox.appendChild(name);
+    authBox.appendChild(out);
+  } else {
+    showLock();
+    authBox.innerHTML = '<span>USER</span><button class="btn ghost" id="loginBtn2">Iniciar sesión</button>';
+    authBox.querySelector('#loginBtn2')?.addEventListener('click', login);
+  }
+});
+
+// Asegura que al recargar SIEMPRE se pida login (inMemoryPersistence ya lo hace)
+window.addEventListener('load', ()=>{ if(!auth.currentUser) showLock(); });
+  </script>
+</body>
+</html>

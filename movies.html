@@ -110,7 +110,8 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt:'select_account' });
 
 // ✅ Clave: NO persistir sesión entre recargas
-await setPersistence(auth, inMemoryPersistence);
+import { browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+await setPersistence(auth, browserLocalPersistence); // comparte sesión entre páginas del MISMO ORIGEN
 
 /* UI - referencias rápidas */
 const $ = (s, ctx=document) => ctx.querySelector(s);
@@ -383,8 +384,7 @@ onAuthStateChanged(auth, (user)=>{
   }
 });
 
-// Asegura que al recargar SIEMPRE se pida login (inMemoryPersistence ya lo hace)
-window.addEventListener('load', ()=>{ if(!auth.currentUser) showLock(); });
+// (Eliminado forzado de logout en recarga para permitir SSO entre apps del mismo origen) });
   </script>
 </body>
 </html>

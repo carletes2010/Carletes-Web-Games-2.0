@@ -34,6 +34,14 @@
   input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--stroke);background:transparent;color:var(--fg);outline:none}
   .notice{border:1px dashed var(--stroke);color:var(--muted);padding:10px;border-radius:12px;font-size:14px}
 
+  /* Selector de servicio */
+  .service{max-width:960px;margin:40px auto;padding:20px}
+  .service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+  .service-card{background:var(--card);border:1px solid var(--stroke);border-radius:16px;box-shadow:var(--shadow);padding:16px;text-align:center;cursor:pointer;transition:.15s transform}
+  .service-card:hover{transform:translateY(-2px)}
+  .service-logo{width:100%;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:12px;border:1px solid var(--stroke)}
+  .service-name{font-weight:900;margin-top:10px}
+
   /* Catálogo */
   .topbar{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke)}
   .topbar-inner{max-width:1100px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
@@ -55,7 +63,7 @@
 <div id="authView" class="center">
   <div class="card">
     <div class="hero">
-      <div class="badge">Acceso a Carletes Games</div>
+      <div class="badge">Acceso a Carletes</div>
       <h1 class="title">Inicia sesión para continuar</h1>
       <p class="sub">Crea cuenta con correo o usa Google.</p>
     </div>
@@ -88,6 +96,38 @@
   </div>
 </div>
 
+<!-- ===== SELECTOR DE SERVICIO ===== -->
+<div id="serviceView" class="hidden">
+  <div class="wrap service">
+    <div class="hero" style="margin-bottom:18px">
+      <div class="badge">Elige tu servicio</div>
+      <h2 class="title">¿Qué quieres usar hoy?</h2>
+      <p class="sub">Selecciona Carletes Games, Music o Movies.</p>
+    </div>
+
+    <section class="service-grid">
+      <article id="svc-games" class="service-card" role="button" tabindex="0" aria-label="Carletes Games">
+        <img class="service-logo" src="carletesgameslogo.png" alt="Carletes Games">
+        <div class="service-name">Carletes Games</div>
+      </article>
+
+      <article id="svc-music" class="service-card" role="button" tabindex="0" aria-label="Carletes Music">
+        <img class="service-logo" src="carletesmusiclogo.png" alt="Carletes Music">
+        <div class="service-name">Carletes Music</div>
+      </article>
+
+      <article id="svc-movies" class="service-card" role="button" tabindex="0" aria-label="Carletes Movies">
+        <img class="service-logo" src="carletesmovieslogo.png" alt="Carletes Movies">
+        <div class="service-name">Carletes Movies</div>
+      </article>
+    </section>
+
+    <div style="margin-top:16px;text-align:center">
+      <button id="logoutFromService" class="btn ghost">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== APP / CATÁLOGO ===== -->
 <div id="appView" class="hidden">
   <div class="topbar">
@@ -104,6 +144,7 @@
       <p class="subtitle">¡Disfruta de los nuevos juegos en Carletes Games!</p>
       <div style="display:flex;gap:10px;justify-content:center">
         <a href="#menu" id="btn-random" class="btn ghost">Juego al azar</a>
+        <a href="#" id="btn-change-service" class="btn ghost">Cambiar servicio</a>
       </div>
     </section>
 
@@ -138,6 +179,7 @@
 
   // === DOM ===
   const authView = document.getElementById('authView');
+  const serviceView = document.getElementById('serviceView');
   const appView  = document.getElementById('appView');
   const statusEl = document.getElementById('status');
   const userName = document.getElementById('userName');
@@ -161,6 +203,13 @@
 
   const menu = document.getElementById('menu');
   const btnRandom = document.getElementById('btn-random');
+  const btnChangeService = document.getElementById('btn-change-service');
+  const logoutFromService = document.getElementById('logoutFromService');
+
+  // Service cards
+  const svcGames  = document.getElementById('svc-games');
+  const svcMusic  = document.getElementById('svc-music');
+  const svcMovies = document.getElementById('svc-movies');
 
   // === util ===
   function setTab(which){
@@ -265,18 +314,46 @@
   };
 
   // Cerrar sesión
-  logout.onclick = async (e)=>{
-    e.preventDefault();
+  async function doLogout(){
     try{ await signOut(auth); analytics && logEvent(analytics,'logout') }finally{ location.reload() }
-  };
+  }
+  logout.onclick = (e)=>{ e.preventDefault(); doLogout(); };
+  logoutFromService.onclick = (e)=>{ e.preventDefault(); doLogout(); };
 
-  // === Mostrar catálogo cuando hay sesión ===
+  // === Vistas ===
+  function showAuth(){
+    authView.classList.remove('hidden');
+    serviceView.classList.add('hidden');
+    appView.classList.add('hidden');
+  }
+  function showServicePicker(user){
+    authView.classList.add('hidden');
+    serviceView.classList.remove('hidden');
+    appView.classList.add('hidden');
+    // Accesibilidad: foco inicial
+    svcGames?.focus();
+  }
   function showApp(user){
     authView.classList.add('hidden');
+    serviceView.classList.add('hidden');
     appView.classList.remove('hidden');
     userName.textContent = user.displayName || user.email || 'usuario';
     try{ analytics && user?.uid && setUserId(analytics, user.uid) }catch{}
     renderCatalog();
+  }
+
+  // Acciones del selector
+  function wireServiceActions(user){
+    svcGames.onclick = ()=> showApp(user);
+    svcGames.onkeydown = (e)=>{ if(e.key==='Enter' || e.key===' ') showApp(user) };
+
+    svcMusic.onclick = ()=>{ location.href = 'music.html' };
+    svcMusic.onkeydown = (e)=>{ if(e.key==='Enter' || e.key===' ') location.href='music.html' };
+
+    svcMovies.onclick = ()=>{ location.href = 'movies.html' };
+    svcMovies.onkeydown = (e)=>{ if(e.key==='Enter' || e.key===' ') location.href='movies.html' };
+
+    btnChangeService.onclick = (e)=>{ e.preventDefault(); showServicePicker(user) };
   }
 
   // === Política: pedir login al recargar la página ===
@@ -292,14 +369,23 @@
   (async ()=>{
     try{
       const res = await getRedirectResult(auth);
-      if(res?.user){ msg(`Autenticado como ${res.user.displayName || res.user.email}.`); showApp(res.user) }
+      if(res?.user){
+        msg(`Autenticado como ${res.user.displayName || res.user.email}.`);
+        showServicePicker(res.user);
+        wireServiceActions(res.user);
+      }
     }catch(e){ msg(mapAuthError(e)) }
   })();
 
   // Estado de auth
   onAuthStateChanged(auth, (user)=>{
-    if(user) showApp(user);
-    else { authView.classList.remove('hidden'); appView.classList.add('hidden') }
+    if(user){
+      // Siempre muestra el selector primero
+      showServicePicker(user);
+      wireServiceActions(user);
+    } else {
+      showAuth();
+    }
   });
 
   // UX

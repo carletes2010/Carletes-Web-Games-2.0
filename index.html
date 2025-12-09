@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Chopo Medicos</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a; --fg:#f9fafb; --muted:#9ca3af; --card:#111; --stroke:#222;
+    --accent:#3b82f6; --accent-2:#2563eb; --radius:16px; --shadow:0 8px 24px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  .btn{padding:12px 18px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--accent)}
+  .btn.ghost:hover{background:var(--accent);color:#fff}
+  .btn.full{width:100%}
+
+  /* Selector de servicio */
+  .service{max-width:960px;margin:40px auto;padding:20px}
+  .hero{text-align:center;margin-bottom:10px}
+  .badge{display:inline-block;border:1px solid var(--accent);color:var(--accent);font-weight:800;border-radius:999px;padding:6px 12px;margin-bottom:8px}
+  .title{font-size:clamp(24px,4vw,32px);font-weight:900;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px}
+
+  .service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+  .service-card{background:var(--card);border:1px solid var(--stroke);border-radius:16px;box-shadow:var(--shadow);padding:16px;text-align:center;cursor:pointer;transition:.15s transform}
+  .service-card:hover{transform:translateY(-2px)}
+  .service-logo{width:100%;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:12px;border:1px solid var(--stroke)}
+  .service-name{font-weight:900;margin-top:10px}
+
+  /* Catálogo */
+  .topbar{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke)}
+  .topbar-inner{max-width:1100px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+  .profile{font-size:14px;color:var(--muted)}
+  .hero-catalog{margin:20px 0 26px;padding:60px 20px;background:var(--card);border:1px solid var(--stroke);border-radius:20px;box-shadow:var(--shadow);text-align:center}
+  .title-xl{font-size:clamp(28px,6vw,44px);font-weight:900;margin:0 0 10px}
+  .subtitle{max-width:740px;margin:0 auto 18px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+  .card-game{background:var(--card);border:1px solid var(--stroke);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:.15s transform}
+  .card-game:hover{transform:translateY(-2px)}
+  .thumb{width:100%;aspect-ratio:16/11;object-fit:contain;background:#000}
+  .meta{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+  .hidden{display:none!important}
+  footer{margin:30px 0;text-align:center;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+
+<!-- ===== SELECTOR DE SERVICIO (siempre visible primero) ===== -->
+<div id="serviceView">
+  <div class="wrap service">
+    <div class="hero" style="margin-bottom:18px">
+      <div class="badge">Elige tu servicio</div>
+      <h2 class="title">¿Qué quieres usar hoy?</h2>
+      <p class="sub">Selecciona Carletes Games, Music o Movies.</p>
+    </div>
+
+    <section class="service-grid">
+      <article id="svc-games" class="service-card">
+        <img class="service-logo" src="carletesgameslogo.png" alt="Carletes Games">
+        <div class="service-name">Carletes Games</div>
+      </article>
+
+      <article id="svc-music" class="service-card">
+        <img class="service-logo" src="carletesmusiclogo.png" alt="Carletes Music">
+        <div class="service-name">Carletes Music</div>
+      </article>
+
+      <article id="svc-movies" class="service-card">
+        <img class="service-logo" src="carletesmovieslogo.png" alt="Carletes Movies">
+        <div class="service-name">Carletes Movies</div>
+      </article>
+    </section>
+  </div>
+</div>
+
+<!-- ===== APP / CATÁLOGO ===== -->
+<div id="appView" class="hidden">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div>🎮 <strong>Carletes Games</strong></div>
+      <div class="profile">Bienvenido, <strong>Invitado</strong></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero-catalog">
+      <div class="badge">Catálogo</div>
+      <h2 class="title-xl">Elige un juego</h2>
+      <p class="subtitle">¡Disfruta de los nuevos juegos en Carletes Games!</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <a href="#menu" id="btn-random" class="btn ghost">Juego al azar</a>
+        <a href="#" id="btn-change-service" class="btn ghost">Cambiar servicio</a>
+      </div>
+    </section>
+
+    <main id="menu" class="grid"></main>
+    <footer>Hecho con 💙 por Carletes · Usa audífonos 😉</footer>
+  </div>
+</div>
+
+<script type="module">
+  // === DOM ===
+  const serviceView = document.getElementById('serviceView');
+  const appView  = document.getElementById('appView');
+  const menu = document.getElementById('menu');
+  const btnRandom = document.getElementById('btn-random');
+  const btnChangeService = document.getElementById('btn-change-service');
+
+  const svcGames  = document.getElementById('svc-games');
+  const svcMusic  = document.getElementById('svc-music');
+  const svcMovies = document.getElementById('svc-movies');
+
+  // === Juegos ===
+  const GAMES = [
+    { id:'drivemad',       name:'Drive Mad',           thumb:'img/drivemad.png', frame:'gamefiles/DriveMad/index.html' },
+    { id:'monkeymart',     name:'Monkey Mart',         thumb:'img/monkeymart.png', frame:'https://carletes2010.github.io/Monkey-Mart/' },
+    { id:'subwaysurfers',  name:'Subway Surfers',      thumb:'img/subway-surfers-haunted-hood.webp', frame:'gamefiles/Subway-Surfers-Haunted-Hood-main/index.html' },
+    { id:'uno',            name:'UNO',                 thumb:'img/uno.jpg', frame:'gamefiles/uno/index.html' },
+    { id:'clashroyale',    name:'Clash Royale',        thumb:'img/ClashRoyale.png', frame:'gamefiles/ClashRoyale/index.html' },
+    { id:'blockblast',     name:'Block Blast',         thumb:'img/blockblast.jpg', frame:'gamefiles/blockblast/index.html' },
+    { id:'retrobowl',      name:'Retro Bowl',          thumb:'img/retrobowl.png', frame:'gamefiles/RetroBowl/index.html' },
+    { id:'angrybirds',     name:'Angry Birds',         thumb:'img/angrybirds.png', frame:'gamefiles/angrybirds/fullscreen.html' },
+    { id:'youtube',        name:'Youtube Unblocked',   thumb:'img/YT.png', frame:'https://carletes2010.github.io/mahara/' },
+    { id:'moneyroller',    name:'Money Roller',        thumb:'img/money-roller.png', frame:'gamefiles/money-roller-main/index.html' },
+    { id:'pool8',          name:'8 Ball Pool',         thumb:'img/8ballpool.png', frame:'gamefiles/8-ball-pool-main/index.html' },
+    { id:'jetpack',        name:'Jetpack Joyride',     thumb:'img/Jetpack.png', frame:'gamefiles/Jetpack-Joyride-main/index.html' },
+    { id:'tinyfishing',    name:'Tiny-Fishing',        thumb:'img/tiny-fishing.png', frame:'gamefiles/Tiny-Fishing-main/index.html' },
+    { id:'ninjafruit',     name:'Ninja-Fruit',         thumb:'img/fruit-ninja.png', frame:'gamefiles/Ninja-Fruit-main/index.html' },
+    { id:'asmallworldcup', name:'A Small World Cup',   thumb:'img/asmallworldcup.png', frame:'gamefiles/asmallworldcup-main/index.html' },
+    { id:'eggycar',        name:'EGGY CAR',            thumb:'img/Eggy-Car.png', frame:'gamefiles/eggycar-main/index.html' },
+    { id:'clashoftanks',   name:'Clash Of Tanks',      thumb:'img/clash-of-tanks.png', frame:'gamefiles/ClashOfTanks-gh-pages/index.html' },
+    { id:'penalty2',       name:'Penalty Shooters 2',  thumb:'img/penalty-shooters-2.png', frame:'gamefiles/penalty-shooters-2-main/index.html' }
+  ];
+
+  function renderCatalog(){
+    menu.innerHTML = GAMES.map(g => `
+      <article class="card-game">
+        <a class="play" href="frame.html?${encodeURIComponent(g.id)}">
+          <img class="thumb" src="${g.thumb}" alt="${g.name}">
+        </a>
+        <div class="meta">
+          <span style="font-weight:800">${g.name}</span>
+          <a class="btn" style="padding:8px 12px" href="frame.html?${encodeURIComponent(g.id)}">Jugar</a>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  // Random
+  btnRandom.onclick = (e)=>{
+    e.preventDefault();
+    const r = Math.floor(Math.random()*GAMES.length);
+    location.href = `frame.html?${encodeURIComponent(GAMES[r].id)}`;
+  };
+
+  // Cambiar servicio
+  btnChangeService.onclick = (e)=>{
+    e.preventDefault();
+    appView.classList.add("hidden");
+    serviceView.classList.remove("hidden");
+  };
+
+  // Acciones del selector
+  svcGames.onclick = ()=>{
+    serviceView.classList.add("hidden");
+    appView.classList.remove("hidden");
+    renderCatalog();
+  };
+
+  svcMusic.onclick = ()=>{ location.href = '/gamefiles/music/index.html' };
+  svcMovies.onclick = ()=>{ location.href = 'movies.html' };
+</script>
+
+</body>
+</html>

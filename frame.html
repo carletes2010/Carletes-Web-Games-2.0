@@ -8,30 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{ --bg:#0a0a0a; --fg:#f9fafb; --muted:#9ca3af; --card:#111; --stroke:#222; --accent:#3b82f6; --radius:18px }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
-  .hidden{display:none!important}
+  *{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
   .top{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:10px;padding:10px 14px}
   .title{margin:0;font-weight:900}
-  .btn{padding:8px 14px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:12px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
-  .btn.ghost{background:transparent;color:var(--accent)}
   .stage{margin:12px;padding:0 12px}
   .frame-wrap{border:1px solid var(--stroke);border-radius:18px;overflow:hidden;background:#000}
   .game{display:block;width:100%;aspect-ratio:16/9;height:calc(100svh - 160px);max-height:calc(100svh - 160px);border:0;background:#000}
+  .btn{padding:12px 18px;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:12px;font-weight:900;cursor:pointer;text-decoration:none}
   .notice{border:1px dashed var(--stroke);color:var(--muted);padding:10px;border-radius:12px;font-size:14px;margin-top:10px}
 </style>
 </head>
+
 <body>
 
-<!-- Player (SIN LOGIN) -->
+<!-- Vista principal SIN LOGIN -->
 <div id="playerView">
   <div class="top">
-    <a href="index.html" class="btn ghost">← Catálogo</a>
+    <a href="index.html" class="btn">← Catálogo</a>
     <h2 id="gameTitle" class="title">Cargando…</h2>
-    <div style="margin-left:auto;display:flex;gap:8px">
-      <a class="btn ghost" href="https://www.google.com" target="_blank" rel="noopener noreferrer nofollow">Pánico</a>
-    </div>
   </div>
+
   <div class="stage">
     <div class="frame-wrap">
       <iframe id="gameFrame" class="game"
@@ -45,58 +41,56 @@
   </div>
 </div>
 
-<script type="module">
-  // Catálogo mínimo (id → url) — idéntico a index
-  const GAMES = {
-    'drivemad':'gamefiles/DriveMad/index.html',
-    'monkeymart':'https://carletes2010.github.io/Monkey-Mart/',
-    'subwaysurfers':'gamefiles/Subway-Surfers-Haunted-Hood-main/index.html',
-    'uno':'gamefiles/uno/index.html',
-    'clashroyale':'gamefiles/ClashRoyale/index.html',
-    'blockblast':'gamefiles/blockblast/index.html',
-    'retrobowl':'gamefiles/RetroBowl/index.html',
-    'angrybirds':'gamefiles/angrybirds/fullscreen.html',
-    'youtube':'https://carletes2010.github.io/mahara/',
-    'moneyroller':'gamefiles/money-roller-main/index.html',
-    'pool8':'gamefiles/8-ball-pool-main/index.html',
-    'jetpack':'gamefiles/Jetpack-Joyride-main/index.html',
-    'tinyfishing':'gamefiles/Tiny-Fishing-main/index.html',
-    'ninjafruit':'gamefiles/Ninja-Fruit-main/index.html',
-    'asmallworldcup':'gamefiles/asmallworldcup-main/index.html',
-    'eggycar':'gamefiles/eggycar-main/index.html',
-    'clashoftanks':'gamefiles/ClashOfTanks-gh-pages/index.html',
-    'penalty2':'gamefiles/penalty-shooters-2-main/index.html'
- 'yohoho':'gamefiles/yohoho/index.html'
-  };
+<script>
+// Catálogo de juegos
+const GAMES = {
+  'drivemad':'gamefiles/DriveMad/index.html',
+  'monkeymart':'https://carletes2010.github.io/Monkey-Mart/',
+  'subwaysurfers':'gamefiles/Subway-Surfers-Haunted-Hood-main/index.html',
+  'uno':'gamefiles/uno/index.html',
+  'clashroyale':'gamefiles/ClashRoyale/index.html',
+  'blockblast':'gamefiles/blockblast/index.html',
+  'retrobowl':'gamefiles/RetroBowl/index.html',
+  'angrybirds':'gamefiles/angrybirds/fullscreen.html',
+  'youtube':'https://carletes2010.github.io/mahara/',
+  'moneyroller':'gamefiles/money-roller-main/index.html',
+  'pool8':'gamefiles/8-ball-pool-main/index.html',
+  'jetpack':'gamefiles/Jetpack-Joyride-main/index.html',
+  'tinyfishing':'gamefiles/Tiny-Fishing-main/index.html',
+  'ninjafruit':'gamefiles/Ninja-Fruit-main/index.html',
+  'asmallworldcup':'gamefiles/asmallworldcup-main/index.html',
+  'eggycar':'gamefiles/eggycar-main/index.html',
+  'clashoftanks':'gamefiles/ClashOfTanks-gh-pages/index.html',
+  'penalty2':'gamefiles/penalty-shooters-2-main/index.html'
+};
 
-  const gameTitle = document.getElementById('gameTitle');
-  const gameFrame = document.getElementById('gameFrame');
+function getGameId(){
+  const q = location.search.replace(/^\?/, '');
+  return decodeURIComponent(q || '').trim();
+}
 
-  // Leer id como frame.html?{gamename}
-  function getGameId(){
-    const q = location.search.replace(/^\?/, '');
-    return decodeURIComponent(q || '').trim();
+function loadGame(){
+  const id = getGameId();
+  const titleEl = document.getElementById("gameTitle");
+  const frameEl = document.getElementById("gameFrame");
+
+  if(!id){
+    titleEl.textContent = "ID de juego no especificado";
+    return;
   }
 
-  function loadGame(){
-    const id = getGameId();
-    if(!id){
-      gameTitle.textContent = 'ID de juego no especificado';
-      return;
-    }
-    const src = GAMES[id];
-    if(!src){
-      gameTitle.textContent = `Juego desconocido: ${id}`;
-      return;
-    }
-    // Texto del título
-    gameTitle.textContent = `Jugando: ${id}`;
-    // Carga del iframe
-    gameFrame.src = src;
+  const src = GAMES[id];
+  if(!src){
+    titleEl.textContent = `Juego desconocido: ${id}`;
+    return;
   }
 
-  // Cargar juego al entrar
-  loadGame();
+  titleEl.textContent = `Jugando: ${id}`;
+  frameEl.src = src;
+}
+
+loadGame();
 </script>
+
 </body>
 </html>

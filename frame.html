@@ -6,9 +6,11 @@
 <title>Carletes Games — Jugando…</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
   :root{ --bg:#0a0a0a; --fg:#f9fafb; --muted:#9ca3af; --card:#111; --stroke:#222; --accent:#3b82f6; --radius:18px }
-  *{box-sizing:border-box} html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Lexend Deca',system-ui,sans-serif}
   .top{position:sticky;top:0;z-index:10;background:#0a0a0acc;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:10px;padding:10px 14px}
   .title{margin:0;font-weight:900}
   .stage{margin:12px;padding:0 12px}
@@ -21,28 +23,23 @@
 
 <body>
 
-<!-- Vista principal SIN LOGIN -->
-<div id="playerView">
-  <div class="top">
-    <a href="index.html" class="btn">← Catálogo</a>
-    <h2 id="gameTitle" class="title">Cargando…</h2>
-  </div>
+<div class="top">
+  <a href="index.html" class="btn">← Catálogo</a>
+  <h2 id="gameTitle" class="title">Cargando…</h2>
+</div>
 
-  <div class="stage">
-    <div class="frame-wrap">
-      <iframe id="gameFrame" class="game"
-        title="Juego"
-        allow="gamepad; clipboard-read; clipboard-write"
-        referrerpolicy="no-referrer"
-        sandbox="allow-scripts allow-same-origin allow-pointer-lock">
-      </iframe>
-    </div>
-    <p class="notice">Consejo: gira tu iPad a horizontal para más espacio.</p>
+<div class="stage">
+  <div class="frame-wrap">
+    <iframe id="gameFrame" class="game"
+      allow="gamepad; clipboard-read; clipboard-write"
+      sandbox="allow-scripts allow-same-origin allow-pointer-lock"
+      referrerpolicy="no-referrer">
+    </iframe>
   </div>
+  <p class="notice">Consejo: gira tu iPad a horizontal para más espacio.</p>
 </div>
 
 <script>
-// Catálogo de juegos
 const GAMES = {
   'drivemad':'gamefiles/DriveMad/index.html',
   'monkeymart':'https://carletes2010.github.io/Monkey-Mart/',
@@ -65,8 +62,7 @@ const GAMES = {
 };
 
 function getGameId(){
-  const q = location.search.replace(/^\?/, '');
-  return decodeURIComponent(q || '').trim();
+  return decodeURIComponent(location.search.replace("?", "").trim());
 }
 
 function loadGame(){
